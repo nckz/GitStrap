@@ -1,0 +1,38 @@
+# Welcome to the homepage.
+
+```python
+# load commandline tools
+from bart.gpi.borg import IFilePath, OFilePath, Command
+from bart.python.cfl import cfl # BART file format
+...
+    # grab user input from UI widgets
+    x = self.getVal('readout samples')
+    y = self.getVal('phase encoding lines')
+    a = self.getVal('acceleration')
+    r = self.getVal('radial')
+    g = self.getVal('golden-ratio sampling')
+
+    # assemble the argument string
+    args = [base_path+'/traj']
+    args += ['-x '+str(x)]
+    args += ['-y '+str(y)]
+    args += ['-a '+str(a)]
+    args += r*['-r']
+    args += g*['-G']
+    args += d*['-D']
+
+    # setup temp file for getting data back
+    # from the external command
+    out = OFilePath(cfl.readcfl, asuffix=['.cfl','.hdr'])
+    args += [out]
+
+    # run commandline and echo full command string
+    print(Command(*args))
+
+    # set GPI node output
+    self.setData('trajectory', out.data())
+
+    return 0
+```
+
+

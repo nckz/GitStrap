@@ -1,21 +1,96 @@
 <!DOCTYPE html>
 <html>
-<title>GitStrap</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-<xmp id="README" theme="united" style="display:none;">
-</xmp>
+    <title>GitStrap</title>
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+ 
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+   
+    <!-- Showdownjs for Markdown conversion -->
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
+
+    <!-- theme -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header clearfix">
+    <nav>
+        <ul class="nav nav-pills pull-right">
+        <li class="active"><a data-toggle="tab" href="#">Home</a></li>
+        <li><a data-toggle="tab" href="#">README</a></li>
+        </ul>
+    </nav>
+        <h3 class="text-muted">GitStrap</h3>
+    </div>
+
+      <div class="jumbotron">
+        <h1>Jumbotron heading</h1>
+        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
+      </div>
+
+    <div class="tab-content">
+        <div id="markdown_content"> </div>
+    </div>
+
+      <footer class="footer">
+        <p>&copy; 2015 Company, Inc.</p>
+      </footer>
+
+</div> <!-- /container -->
+
 
 <script type="text/javascript">
-    var req = new XMLHttpRequest();
+    /* This script loads a Markdown file and translates it to HTML using
+     * Showdown JS, given an input filename. */
+    function toHTML(pageName)
+    {
+        var req = new XMLHttpRequest();
 
-    req.onload = function() {
-        var xmpNode = document.getElementById('README');
-        xmpNode.appendChild(document.createTextNode(this.responseText));
+        req.onload = function() {
+            var node = document.getElementById('markdown_content');
+            
+            /* translate markdown */
+            var converter = new showdown.Converter(),
+                text = this.responseText,
+                html = converter.makeHtml(text);
+
+            node.innerHTML = html;
+        }
+
+        req.open('GET', pageName, true);
+        req.send();
     }
-
-    req.open('GET', 'README', false);
-    req.send();
 </script>
 
-<script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>
+<script>
+    /* Link tab actions. */
+    $(document).ready(function(){
+
+        /* Trigger writes for each tab. */
+        $(".nav-pills a").on( 'shown.bs.tab', function(event){
+            var x = $(event.target).text();
+            toHTML(x);
+        });
+
+        /* Write the initial landing page (i.e. the first in the nav). */
+        toHTML( $(".nav-pills a")[0].innerHTML );
+
+    });
+</script>
+
+</body>
 </html>
