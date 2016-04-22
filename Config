@@ -16,28 +16,18 @@ This setup uses the following:
 ```
  
 ## Pages / Navigation
-List your pages below in the order in which you'd like them to show up on
-your website's navigation bar. Make sure each item is separated by a space.
-These pages must reflect an actual filename in the root/base directory.
+List your pages below in the order in which you'd like them to show up on your
+website's navigation bar. Make sure each item is separated by a space. These
+pages must reflect an actual filename in the root/base directory, you can start
+by editing these files or adding new ones -remember the filename is the same as
+what shows up on the navigation tab.
 
     Example: >Home Contacts About
 
 This setup uses the following:
 
 ```
->README Config Example
-```
-
-## Header
-A running header text can be specified in a file, if desired.  To turn off the
-header text set this option to false.
-    
-    Example: >false
-
-This setup uses the following:
-
-```
->HEADER
+>Readme Config Header Footer Example
 ```
 
 ## Theme
@@ -51,4 +41,27 @@ This setup uses the following:
 
 ```
 >journal
+```
+
+## Header
+A running header text can be specified in a file, if desired.  To turn off the
+header text set this option to false.
+    
+    Example: >false
+
+This setup uses the following:
+
+```
+>Header
+```
+
+## Footer
+A running footer for each page.
+
+    Example: >false
+
+This setup uses the following:
+
+```
+>Footer
 ```
