@@ -75,11 +75,15 @@
         function appendNavLinks(item) {
             var li = document.createElement('li');
             var a  = document.createElement('a');
+            li.setAttribute('id', 'navitem');
             a.setAttribute('data-toggle','tab');
             a.innerHTML = item;
             li.appendChild(a);
             navbar_obj.appendChild(li);
         }
+
+        /* set the first button to be active */
+        $('#navitem')[0].setAttribute('class', 'active');
     }
 
     $(document).ready(populateNav);
