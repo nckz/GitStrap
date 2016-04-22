@@ -53,20 +53,26 @@ You can now start to add your own content via the "New file", "Upload files" and
 ![fitw50](images/NewFile.png)
 
 You can start by modifying the text in any of the existing documents:
-'Readme.md', 'Header', 'Footer', and 'Example'. If you create a new text file
-using the "New file" button, make sure to add that file to the list of site
-"Pages / Navigation" so that your new page shows up.
+'Readme.md', 'Header', 'Footer', and 'Example'. If you create a new page file
+using the "New file" button, make sure to add that file to the list of pages 
+under the "Pages / Navigation" heading in the 'Config' file.
 
 ## Markdown
-Your text content should be added in the Markdown format.  This is a simple
-way of formatting text without requiring knowledge of html or css.  For a quick
-intro you can start
-[here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
+Your text content should be written in the Markdown format.  Markdown is a
+simple way of formatting text without requiring any knowledge of html or css.
+For a quick intro to Markdown you can start
+[here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+and
+[here](https://daringfireball.net/projects/markdown/).
 
 ## Images
 Use the "Upload file" button to add images. For organization sake, upload your
-new images to the existing 'images' folder.  They can then be added to your
+new images to the existing 'images' folder.  Images can then be added to your
 site pages with the following Markdown tag:
 
 #### `![fitw100](images/img_03.jpg)`
+Where `fitw100` means scale the image to fit the width of the page and
+`images/img_03.jpg` refers to an image file ('img_03.jpg') stored in the
+'images' folder.
+
 ![fitw100](images/img_03.jpg)
