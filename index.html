@@ -21,6 +21,16 @@
     <!-- theme -->
     <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cerulean/bootstrap.min.css" rel="stylesheet">
 
+    <!-- markdown extras -->
+    <style> /* Use these "fitw<%>" attributes for the alt text to scale an image */
+    img[alt=fitwidth] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto }
+    img[alt=fitw100] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto}
+    img[alt=fitw75] { width: 75%; float: center; display: block; margin-left: auto; margin-right: auto}
+    img[alt=fitw50] { width: 50%; float: center; display: block; margin-left: auto; margin-right: auto}
+    img[alt=fitw25] { width: 25%; float: center; display: block; margin-left: auto; margin-right: auto}
+    img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto}
+    </style>
+
 </head>
 
 <body>
@@ -28,40 +38,63 @@
 <div class="container">
     <div class="header clearfix">
     <nav>
-        <ul class="nav nav-pills pull-right">
-        <li class="active"><a data-toggle="tab" href="#">Home</a></li>
-        <li><a data-toggle="tab" href="#">README</a></li>
+        <ul class="nav nav-pills pull-right" id="nav-placeholder">
+        <!-- <li class="active"><a data-toggle="tab" >Home</a></li>
+        <li><a data-toggle="tab" >README</a></li> -->
         </ul>
     </nav>
         <h3 class="text-muted">GitStrap</h3>
     </div>
 
-      <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
-      </div>
-
-    <div class="tab-content">
-        <div id="markdown_content"> </div>
+    <div class="jumbotron">
+        <div id="markdown_header"> </div>   
     </div>
 
-      <footer class="footer">
+    <!-- Markdown Content -->
+    <div id="markdown_body"> </div>
+
+    <footer class="footer">
         <p>&copy; 2015 Company, Inc.</p>
-      </footer>
+    </footer>
 
 </div> <!-- /container -->
 
+<script type="text/javascript">
+    /* this script generates the navbar items */
+    function populateNav() {
+
+        var nav_items = ['Home','README'];
+
+        /* navigation object handle */
+        var navbar_obj = document.getElementById('nav-placeholder');
+
+        /* loop over nav items found in the list */
+        nav_items.forEach(appendNavLinks);
+
+        /* create buttons for each item and append to navbar */
+        function appendNavLinks(item) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+            a.setAttribute('data-toggle','tab');
+            a.innerHTML = item;
+            li.appendChild(a);
+            navbar_obj.appendChild(li);
+        }
+    }
+
+    $(document).ready(populateNav);
+
+</script>
 
 <script type="text/javascript">
     /* This script loads a Markdown file and translates it to HTML using
      * Showdown JS, given an input filename. */
-    function toHTML(pageName)
+    function toHTML(pageName, markdown_div)
     {
         var req = new XMLHttpRequest();
 
         req.onload = function() {
-            var node = document.getElementById('markdown_content');
+            var node = document.getElementById(markdown_div);
             
             /* translate markdown */
             var converter = new showdown.Converter(),
@@ -77,17 +110,20 @@
 </script>
 
 <script>
+    /* Write the Jumbotron content. */
+    toHTML( 'HEADER', 'markdown_header');
+
     /* Link tab actions. */
     $(document).ready(function(){
 
         /* Trigger writes for each tab. */
         $(".nav-pills a").on( 'shown.bs.tab', function(event){
             var x = $(event.target).text();
-            toHTML(x);
+            toHTML(x, 'markdown_body');
         });
 
         /* Write the initial landing page (i.e. the first in the nav). */
-        toHTML( $(".nav-pills a")[0].innerHTML );
+        toHTML( $(".nav-pills a")[0].innerHTML, 'markdown_body');
 
     });
 </script>
