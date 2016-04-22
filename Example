@@ -1,0 +1,95 @@
+# Welcome to the Example Page
+
+![fitw100](images/img_01.jpg)
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu massa
+venenatis, pharetra dolor nec, ultrices arcu. Nulla neque massa, accumsan a
+ultricies at, fermentum sed enim. Nam sed vestibulum nisl. Donec lobortis dolor
+eget dolor lacinia, ac maximus enim gravida. In lobortis lorem eget mollis
+fermentum. Suspendisse gravida pulvinar dolor, a feugiat mi. Nulla commodo odio
+nisl, vel imperdiet mauris ultrices at. In hac habitasse platea dictumst. Nunc
+sem mi, lobortis at ante ut, cursus posuere justo. Aenean accumsan nibh massa,
+vel congue augue feugiat nec. Etiam feugiat elit mi, lacinia lobortis sem
+finibus ut.
+
+## Try a Code Sample
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla ante at
+justo ornare laoreet. In finibus elementum risus, non finibus nibh fringilla
+quis. Mauris vehicula venenatis neque porta fringilla. Vestibulum nec orci
+nisi. Morbi bibendum cursus nunc. Fusce molestie sem felis, et dignissim nulla
+feugiat ut. Cras fermentum est ut pharetra pretium. 
+
+```python
+# load commandline tools
+from bart.gpi.borg import IFilePath, OFilePath, Command
+from bart.python.cfl import cfl # BART file format
+...
+    # grab user input from UI widgets
+    x = self.getVal('readout samples')
+    y = self.getVal('phase encoding lines')
+    a = self.getVal('acceleration')
+    r = self.getVal('radial')
+    g = self.getVal('golden-ratio sampling')
+
+    # assemble the argument string
+    args = [base_path+'/traj']
+    args += ['-x '+str(x)]
+    args += ['-y '+str(y)]
+    args += ['-a '+str(a)]
+    args += r*['-r']
+    args += g*['-G']
+    args += d*['-D']
+
+    # setup temp file for getting data back
+    # from the external command
+    out = OFilePath(cfl.readcfl, asuffix=['.cfl','.hdr'])
+    args += [out]
+
+    # run commandline and echo full command string
+    print(Command(*args))
+
+    # set GPI node output
+    self.setData('trajectory', out.data())
+
+    return 0
+```
+
+Morbi malesuada neque vitae convallis pharetra. Nullam et eros non ex commodo
+interdum nec a purus. Integer tincidunt erat eu condimentum aliquam.
+
+## Results
+
+Curabitur faucibus metus eget odio ullamcorper, ac fermentum augue tempus. Sed
+mattis lobortis tempus. Duis facilisis vehicula nunc facilisis interdum.
+Suspendisse molestie viverra dui at tincidunt. Quisque ullamcorper condimentum
+justo non semper. Donec placerat laoreet eros ut sagittis. Phasellus ante odio,
+accumsan a elementum nec, cursus at mi. Etiam lacinia ligula ac ex convallis,
+non cursus tellus rhoncus. Vivamus dapibus ante neque, a faucibus lorem mattis
+a. Sed a ligula nec ipsum viverra cursus et ac arcu. Integer eu lacus quis
+mauris porttitor dictum vitae sit amet sapien. Aenean sed euismod magna, at
+aliquet risus. Donec quis lorem a quam facilisis ullamcorper. Pellentesque
+facilisis, est et dapibus tempus, nisl leo sagittis ipsum, quis dictum purus
+nunc a felis. Quisque finibus vehicula mattis.
+
+Proin placerat ex ut turpis viverra vehicula. Morbi iaculis facilisis nulla
+eget vestibulum. Maecenas tristique non justo vel iaculis. Vestibulum ante
+ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In
+semper scelerisque magna id bibendum. Morbi sed ullamcorper leo. Etiam nisi
+nunc, feugiat quis arcu eu, venenatis posuere metus. Sed pellentesque lacinia
+metus, maximus finibus est consequat non. Aliquam at purus est. Donec laoreet
+magna ut magna consectetur, semper ultricies risus sollicitudin. Nam
+pellentesque auctor rhoncus.
+
+## Conclusion
+In volutpat vel libero ut egestas. Duis in ultricies lacus. Phasellus sit amet
+mauris purus. Mauris congue ut augue sit amet ornare. In hac habitasse platea
+dictumst. Nam rutrum lectus sed pulvinar cursus. Duis arcu justo, venenatis
+luctus quam at, porta mollis magna. Praesent ultrices eget leo eu varius.
+Curabitur euismod lacus quis purus elementum, quis semper risus scelerisque.
+Aenean ligula metus, dictum id bibendum in, varius at metus. Donec dignissim
+sem nec tristique porttitor. Sed accumsan sollicitudin quam eget dictum. Proin
+dapibus neque tristique porta mollis. Vestibulum risus est, sodales sed arcu
+nec, luctus cursus tellus. Proin vitae metus quis ligula sagittis euismod.
+
+![fitw100](images/img_02.jpg)

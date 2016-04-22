@@ -63,13 +63,13 @@
         /* get the title and nav from user config file */
         var options = [];
         var req = new XMLHttpRequest();
-            req.onreadystatechange = function(){
-              if(req.status==200 && req.readyState==4){    
+            req.onreadystatechange = function() {
+              if (req.status==200 && req.readyState==4) {
                 var words = req.responseText.split('\n');
                 for (var i = 0; i < words.length; i++) {
                     if(! (words[i].match(/^#/) || (! words[i]))) {
-                        if( words[i].match(/\S+/) ) {
-                            options.push(words[i]);
+                        if( words[i].match(/^>\S+/) ) {
+                            options.push(words[i].replace(/^>/, ''));
                         }
                     }
                 }
@@ -77,7 +77,7 @@
                 //console.log(options.length);
               }
         }
-        req.open("GET","pages",false);
+        req.open("GET","Config",false); // this must be loaded first
         req.send();
 
         /* line 0: title 

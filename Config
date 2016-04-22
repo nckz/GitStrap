@@ -1,0 +1,54 @@
+# GitStrap page configuration file.
+This configuration file `Config` is used for this demo. Its written in Markdown
+and parses the blockquotes (lines beginning with '`>`') for actual
+configuration options.
+
+## Site Title
+This title will show up on the left side of the navigation bar and on the
+browser tab.
+
+    Example: >My Favorite Website
+
+This setup uses the following:
+
+```
+>GitStrap
+```
+ 
+## Pages / Navigation
+List your pages below in the order in which you'd like them to show up on
+your website's navigation bar. Make sure each item is separated by a space.
+These pages must reflect an actual filename in the root/base directory.
+
+    Example: >Home Contacts About
+
+This setup uses the following:
+
+```
+>README Config Example
+```
+
+## Header
+A running header text can be specified in a file, if desired.  To turn off the
+header text set this option to false.
+    
+    Example: >false
+
+This setup uses the following:
+
+```
+>HEADER
+```
+
+## Theme
+Put the theme name or url from [bootswatch](https://www.bootstrapcdn.com/bootswatch/).
+
+    Examples: >cerulean, >cosmo, >cyborg, >darkly, >flatly, >journal, >lumen,
+        >paper, >readable, >sandstone, >simplex, >slate, >spacelab, >superhero,
+        >united, and >yeti.
+
+This setup uses the following:
+
+```
+>journal
+```
