@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>GitStrap</title>
-
     <!-- JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
  
@@ -35,6 +33,8 @@
 
 <body>
 
+<title class="main-title">GitStrap</title>
+
 <div class="container">
     <div class="header clearfix">
     <nav>
@@ -43,7 +43,7 @@
         <li><a data-toggle="tab" >README</a></li> -->
         </ul>
     </nav>
-        <h3 class="text-muted">GitStrap</h3>
+        <h3 class="text-muted main-title">GitStrap</h3>
     </div>
 
     <div class="jumbotron">
@@ -89,7 +89,10 @@
         var title = options[0];
         var nav_items = options[1].split(' '); 
 
-        /* navigation object handle */
+        /* TITLE change title to user config */
+        $('.main-title').html(title);
+
+        /* NAV navigation object handle */
         var navbar_obj = document.getElementById('nav-placeholder');
 
         /* loop over nav items found in the list */
