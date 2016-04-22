@@ -71,7 +71,7 @@ new images to the existing 'images' folder.  Images can then be added to your
 site pages with the following Markdown tag:
 
 #### `![fitw100](images/img_03.jpg)`
-Where `fitw100` means scale the image to fit the width of the page and
+Where `fitw100` means *scale the image to fit the width of the page* and
 `images/img_03.jpg` refers to an image file ('img_03.jpg') stored in the
 'images' folder.
 
