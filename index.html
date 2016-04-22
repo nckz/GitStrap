@@ -43,15 +43,13 @@
         <h3 class="text-muted main-title">GitStrap</h3>
     </div>
 
-    <div class="jumbotron">
-        <div id="markdown_header"> </div>   
-    </div>
+    <div class="jumbotron" id="markdown_header" style="display: none;"></div>   
 
     <!-- Markdown Content -->
     <div id="markdown_body"> </div>
 
     <hr>
-    <footer class="footer text-center" id="markdown_footer">
+    <footer class="footer text-center" id="markdown_footer" style="display: none;">
     </footer>
 
 </div> <!-- /container -->
@@ -175,6 +173,7 @@
                 html = converter.makeHtml(text);
 
             node.innerHTML = html;
+            $('#'+markdown_div).show();
         }
 
         req.open('GET', pageName, true);
