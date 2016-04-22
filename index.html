@@ -24,6 +24,11 @@
     img[alt=fitw50] { width: 50%; float: center; display: block; margin-left: auto; margin-right: auto}
     img[alt=fitw25] { width: 25%; float: center; display: block; margin-left: auto; margin-right: auto}
     img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto}
+
+    /* let the nav toggle show up */ 
+    .icon-bar {
+        background-color: black;
+    } 
     </style>
 
 </head>
@@ -35,15 +40,27 @@
 <div class="container"> <!-- all page content -->
 
     <!-- Navigation -->
-    <div class="header clearfix">
-    <nav>
-        <ul class="nav nav-pills pull-right" id="nav-placeholder">
-        <!-- <li class="active"><a data-toggle="tab" >Home</a></li>
-        <li><a data-toggle="tab" >README</a></li> -->
-        </ul>
+    <nav class='navbar'>
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                        
+                </button>
+                <h2 class="text-muted main-title">GitStrap</h2>
+            </div><!-- navbar-header -->
+
+            <div class="collapse navbar-collapse navbar-right" id="myNavbar">
+                <ul class="nav navbar-nav" id="nav-placeholder">
+                <!-- <li class="active"><a data-toggle="tab" >Home</a></li>
+                <li><a data-toggle="tab" >README</a></li> -->
+                </ul>
+            </div>
+
+        </div><!-- container-fluid -->
     </nav>
-        <h2 class="text-muted main-title">GitStrap</h2>
-    </div>
 
     <!-- Running Header -->
     <div class="jumbotron" id="markdown_header" style="display: none;"></div>   
@@ -137,6 +154,7 @@
             var a  = document.createElement('a');
             li.setAttribute('id', 'navitem');
             a.setAttribute('data-toggle','tab');
+            a.setAttribute('style','z-index: 1000;');
             a.innerHTML = item;
             li.appendChild(a);
             navbar_obj.appendChild(li);
@@ -190,13 +208,13 @@
     $(document).ready(function(){
 
         /* Trigger writes for each tab. */
-        $(".nav-pills a").on( 'shown.bs.tab', function(event){
+        $("#nav-placeholder a").on( 'shown.bs.tab', function(event){
             var x = $(event.target).text();
             toHTML(x, 'markdown_body');
         });
 
         /* Write the initial landing page (i.e. the first in the nav). */
-        toHTML( $(".nav-pills a")[0].innerHTML, 'markdown_body');
+        toHTML( $("#nav-placeholder a")[0].innerHTML, 'markdown_body');
 
     });
 </script>
