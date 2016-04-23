@@ -1,8 +1,6 @@
-**GitStrap** is a simple Bootstrap template that allows web developers to
-quickly generate a static web page on free hosting sites like
-[GitHub](http://github.com) and [GitLab](http://gitlab.com).  This can be done
-without any code/web development background or knowledge of the git versioning
-system.  The requirements are:
+#### [GitStrap](#) is a simple Bootstrap template that allows web developers to quickly generate a static web page on free hosting sites like [GitHub](http://github.com) and [GitLab](http://gitlab.com). 
+This can be done without any code/web development background or knowledge of
+the git versioning system.  The requirements are:
 
 * A [GitHub account](https://github.com/join?source=header-home)
 * A modern web browser and connection to the internet
