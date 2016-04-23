@@ -1,6 +1,8 @@
 #### [GitStrap](#) is a simple [Bootstrap](http://getbootstrap.com/) template that allows web developers to quickly generate a static web page on free hosting sites like [GitHub](http://github.com) and [GitLab](http://gitlab.com). 
 This can be done without any code/web development background or knowledge of
-the git versioning system.  The requirements are:
+the git versioning system.  The pages are written as simple text files (in
+Markdown) and linked by listing in a Config file -both of which are editable
+via the GitHub web tools. The requirements are:
 
 * A [GitHub account](https://github.com/join?source=header-home)
 * A modern web browser and connection to the internet
@@ -17,7 +19,7 @@ click the 'Fork' button in the upper right.
 # Step 2 - Make Your First Commit
 In order for GitStrap to show up under your project url, you'll have to make at
 least one commit. -The Config file is a good place to start. Click on the
-'Config' file.
+'Config' file in your project's file browser.
 
 #### Config
 ![fitw100](images/Config.png)
