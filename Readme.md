@@ -1,4 +1,4 @@
-#### [GitStrap](#) is a simple [Bootstrap](http://getbootstrap.com/) template that allows web developers to quickly generate a static web page on free hosting sites like [GitHub](http://github.com) and [GitLab](http://gitlab.com). 
+#### [GitStrap](#) is a simple [Bootstrap](http://getbootstrap.com/) template that allows web developers to quickly generate a static web page (like this one) on free hosting sites like [GitHub](http://github.com) and [GitLab](http://gitlab.com). 
 This can be done without any code/web development background or knowledge of
 the git versioning system.  The pages are written as simple text files (in
 Markdown) and linked by listing in a Config file -both of which are editable
