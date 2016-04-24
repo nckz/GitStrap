@@ -56,10 +56,7 @@
             </div><!-- navbar-header -->
 
             <div class="collapse navbar-collapse navbar-right" id="myNavbar">
-                <ul class="nav navbar-nav" id="nav-placeholder">
-                <!-- <li class="active"><a data-toggle="tab" >Home</a></li>
-                <li><a data-toggle="tab" >README</a></li> -->
-                </ul>
+                <ul class="nav navbar-nav" id="nav-placeholder"></ul>
             </div>
 
         </div><!-- container-fluid -->
@@ -184,15 +181,14 @@
             /* setup nav links for each button */
             a.setAttribute('href', '?page='+item+'#');
             a.setAttribute('data-toggle','tab');
-            a.setAttribute('style','z-index: 1000;');
+            a.setAttribute('style','z-index: 1000;'); /* make sure the ribbon
+                                                       * doesn't get in the way
+                                                       */
             a.innerHTML = item;
 
             li.appendChild(a);
             navbar_obj.appendChild(li);
         }
-
-        /* set the first button to be active */
-        //$('#navitem')[0].setAttribute('class', 'active');
 
         /* 3. HEADER */
         /* Write the Jumbotron content. */
@@ -237,12 +233,11 @@
 <script>
     /* Link tab actions. */
     $(document).ready(function(){
-
         /* Trigger writes for each tab. */
         $("#nav-placeholder a").on( 'shown.bs.tab', function(event){
             /* if a button is triggered then rewrite the url */
-            var page = $(event.target).text();
-            window.location.assign('?page='+page);
+            var href = $(event.target).attr('href');
+            window.location.assign(href);
         });
     });
 </script>
