@@ -55,7 +55,7 @@ You can now start to add your own content via the "New file", "Upload files" and
 You can start by modifying the text in any of the existing documents:
 'Readme.md', 'Header', 'Footer', and 'Example'. If you create a new page file
 using the "New file" button, make sure to add that file to the list of pages 
-under the "Pages / Navigation" heading in the 'Config' file.
+under the "Pages / Navigation" heading in the '[Config](?page=Config)' file.
 
 ## Markdown
 Your text content should be written in the Markdown format.  Markdown is a
