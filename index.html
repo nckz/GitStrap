@@ -95,8 +95,6 @@
                         }
                     }
                 }
-                //console.log(options);
-                //console.log(options.length);
               }
         }
         req.open("GET","Config",false); // this must be loaded first
@@ -108,7 +106,6 @@
          * line 3: header filename
          * line 4: footer filename
          */
-        //console.log(options);
         var title = options[0];
         var nav_items = options[1].split(' '); 
         var theme = options[2];
@@ -156,20 +153,47 @@
         nav_items.forEach(appendNavLinks);
 
         /* create buttons for each item and append to navbar */
-        function appendNavLinks(item) {
+        function appendNavLinks(item, index, arr) {
+
+            /* find out if client has asked for a specific page. 
+             * SO: get-url-variables-from-url-to-form-with-jquery 
+             */
+            function getURLParameter(name) {
+                return decodeURI((RegExp(name + '=' +
+                    '(.+?)(&|$)').exec(location.search)||[,null])[1]);
+            }
+            var page = getURLParameter('page');
+
+            /* validate the requested page by checking against the nav list */
+            var page_found = $.inArray(page, nav_items) > -1;
+
             var li = document.createElement('li');
             var a  = document.createElement('a');
+
+            /* select active page and nav buttons */
+            if (page_found) {
+            if (page == item) {
+                li.setAttribute('class', 'active');
+                toHTML( item, 'markdown_body');
+            } }
+            else if (index == 0) {
+               toHTML( item, 'markdown_body'); 
+            }
             li.setAttribute('id', 'navitem');
+
+            /* setup nav links for each button */
+            var base_url = window.location.protocol + "//" + window.location.host + "/";
+            a.setAttribute('href', base_url+'?page='+item+'#');
             a.setAttribute('data-toggle','tab');
             a.setAttribute('style','z-index: 1000;');
-            a.setAttribute('href', '#');
             a.innerHTML = item;
+
             li.appendChild(a);
             navbar_obj.appendChild(li);
         }
 
         /* set the first button to be active */
-        $('#navitem')[0].setAttribute('class', 'active');
+        //$('#navitem')[0].setAttribute('class', 'active');
 
         /* 3. HEADER */
         /* Write the Jumbotron content. */
@@ -181,7 +205,7 @@
             toHTML( footer, 'markdown_footer');
         }
 
-    }
+    } /* end populateNav */
 
     $(document).ready(populateNav);
 
@@ -220,10 +244,6 @@
             var x = $(event.target).text();
             toHTML(x, 'markdown_body');
         });
-
-        /* Write the initial landing page (i.e. the first in the nav). */
-        toHTML( $("#nav-placeholder a")[0].innerHTML, 'markdown_body');
-
     });
 </script>
 
