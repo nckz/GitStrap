@@ -14,7 +14,8 @@ This setup uses the following:
 ```
 >GitStrap
 ```
- 
+
+<a name="pagesandnav"></a>
 ## Pages / Navigation
 List your pages below in the order in which you'd like them to show up on your
 website's navigation bar. Make sure each item is separated by a space. These
