@@ -159,22 +159,23 @@
                 return decodeURI((RegExp(name + '=' +
                     '(.+?)(&|$)').exec(location.search)||[,null])[1]);
             }
-            var page = getURLParameter('page');
+            var req_page = getURLParameter('page');
 
             /* validate the requested page by checking against the nav list */
-            var page_found = $.inArray(page, nav_items) > -1;
+            var page_found = $.inArray(req_page, nav_items) > -1;
 
             var li = document.createElement('li');
             var a  = document.createElement('a');
 
             /* select active page and nav buttons */
             if (page_found) {
-            if (page == item) {
+            if (req_page == item) {
                 li.setAttribute('class', 'active');
                 toHTML( item, 'markdown_body');
             } }
             else if (index == 0) {
-               toHTML( item, 'markdown_body'); 
+                li.setAttribute('class', 'active');
+                toHTML( item, 'markdown_body'); 
             }
             li.setAttribute('id', 'navitem');
 
@@ -231,15 +232,12 @@
 </script>
 
 <script>
+
     /* Link tab actions. */
-    $(document).ready(function(){
-        /* Trigger writes for each tab. */
-        $("#nav-placeholder a").on( 'shown.bs.tab', function(event){
-            /* if a button is triggered then rewrite the url */
-            var href = $(event.target).attr('href');
-            window.location.assign(href);
-        });
-    });
+    $(document).on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        var href = $(e.target).attr('href');
+        window.location.assign(href);
+    })
 </script>
 
 </body>
