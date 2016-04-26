@@ -76,26 +76,38 @@
 </div> <!-- /container -->
 
 <script type="text/javascript">
-    /* this script generates the navbar items */
-    function populateNav() {
 
-        /* get the title and nav from user config file */
-        var options = [];
+    /* this script generates the navbar items */
+    function getConfig() {
+
+        /* If the config file can be downloaded, parse it. */
         var req = new XMLHttpRequest();
-            req.onreadystatechange = function() {
-              if (req.status==200 && req.readyState==4) {
-                var words = req.responseText.split('\n');
-                for (var i = 0; i < words.length; i++) {
-                    if(! (words[i].match(/^#/) || (! words[i]))) {
-                        if( words[i].match(/^>\S+/) ) {
-                            options.push(words[i].replace(/^>/, ''));
-                        }
-                    }
-                }
-              }
+        req.onreadystatechange = function() {
+            if (req.status==200 && req.readyState==4) {
+                parseConfig(req.responseText);
+            }
         }
-        req.open("GET","Config",false); // this must be loaded first
+
+        req.open("GET","Config",true);
         req.send();
+
+    } /* getConfig() */
+
+</script>
+
+<script type="text/javascript">
+
+    function parseConfig(text) {
+
+        var options = [];
+        var words = text.split('\n');
+        for (var i = 0; i < words.length; i++) {
+            if(! (words[i].match(/^#/) || (! words[i]))) {
+                if( words[i].match(/^>\S+/) ) {
+                    options.push(words[i].replace(/^>/, ''));
+                }
+            }
+        }
 
         /* line 0: title 
          * line 1: nav filenames
@@ -201,13 +213,18 @@
             toHTML( footer, 'markdown_footer');
         }
 
-    } /* end populateNav */
-
-    $(document).ready(populateNav);
+    } /* parseConfig() */
 
 </script>
 
 <script type="text/javascript">
+
+    $(document).ready(getConfig);
+
+</script>
+
+<script type="text/javascript">
+
     /* This script loads a Markdown file and translates it to HTML using
      * Showdown JS, given an input filename. */
     function toHTML(pageName, markdown_div)
@@ -229,15 +246,17 @@
         req.open('GET', pageName, true);
         req.send();
     }
+
 </script>
 
-<script>
+<script type="text/javascript">
 
     /* Link tab actions. */
     $(document).on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var href = $(e.target).attr('href');
         window.location.assign(href);
     })
+
 </script>
 
 </body>
