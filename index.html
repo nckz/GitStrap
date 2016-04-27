@@ -62,6 +62,9 @@
         </div><!-- container-fluid -->
     </nav>
 
+    <!-- Error -->
+    <div class="jumbotron" id="error_div" style="display: none; color: red;"></div>
+
     <!-- Running Header -->
     <div class="jumbotron" id="markdown_header" style="display: none;"></div>   
 
@@ -86,6 +89,8 @@
         req.onreadystatechange = function() {
             if (req.status==200 && req.readyState==4) {
                 callback(req.responseText);
+            }else if(req.status==404){
+                fillDiv('ERROR: 404, File Not Found: "' + filename + '"', 'error_div');
             }
         }
 
@@ -94,10 +99,7 @@
 
     } /* getFile() */
 
-</script>
-
-<script type="text/javascript">
-
+    /* act on all options given in the Config file */
     function parseConfig(text) {
 
         /* Split config file into options. */
@@ -125,15 +127,17 @@
         var header = options[3];
         var footer = options[4];
 
-        /* 0. TITLE change title to user config */
+        /* 0. TITLE - change title to user config */
         $('.main-title').html(title);
 
         if (title == 'GitStrap') {
             $('#github_ribbon').show()
         }
 
-        /* 1. THEME */
-        /* check theme name or url */
+        /* 1. THEME - get the theme loaded first to ensure css is setup before
+         * adding other elements. */
+
+        /* check for theme name or url */
         var direct_url = theme;
         var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' +
             theme + '/bootstrap.min.css';
@@ -221,51 +225,36 @@
 
     } /* parseConfig() */
 
-</script>
-
-<script type="text/javascript">
-
-    /* start things off with the Config file */
-    $(document).ready(getFile('Config', parseConfig));
-
-</script>
-
-<script type="text/javascript">
-
     function writeMarkdownToTag(text, markdown_div) {
-
         /* translate markdown */
         var converter = new showdown.Converter(),
             html = converter.makeHtml(text);
-
-        /* fill in the specified div */
-        var node = document.getElementById(markdown_div);
-        node.innerHTML = html;
-        $('#'+markdown_div).show();
+        fillDiv(html, markdown_div);
     }
 
-</script>
+    /* fill in the specified div innerHTML with the given text */
+    function fillDiv(text, div){
+        var node = document.getElementById(div);
+        node.innerHTML = text;
+        $('#'+div).show();
+    }
 
-<script type="text/javascript">
-
+    /* download a markdown file, convert to HTML, then post to given div-id */
     function toHTML(pageName, markdown_div)
     {
-        /* download a markdown file, convert to HTML,
-           then post to given div-id */
         var callback = function (text)
             { writeMarkdownToTag(text, markdown_div); };
         getFile(pageName, callback);
     }
-
-</script>
-
-<script type="text/javascript">
 
     /* Link tab actions. */
     $(document).on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var href = $(e.target).attr('href');
         window.location.assign(href);
     })
+
+    /* start things off with the Config file */
+    $(document).ready(getFile('Config', parseConfig));
 
 </script>
 
