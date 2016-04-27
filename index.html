@@ -77,21 +77,22 @@
 
 <script type="text/javascript">
 
-    /* this script generates the navbar items */
-    function getConfig() {
+    /* get the file and send the text to the callback */
+    function getFile(filename, callback) {
 
-        /* If the config file can be downloaded, parse it. */
+        /* If the config file can be downloaded send its text to the callback.
+         */
         var req = new XMLHttpRequest();
         req.onreadystatechange = function() {
             if (req.status==200 && req.readyState==4) {
-                parseConfig(req.responseText);
+                callback(req.responseText);
             }
         }
 
-        req.open("GET","Config",true);
+        req.open('GET',filename,true);
         req.send();
 
-    } /* getConfig() */
+    } /* getFile() */
 
 </script>
 
@@ -99,10 +100,13 @@
 
     function parseConfig(text) {
 
+        /* Split config file into options. */
         var options = [];
         var words = text.split('\n');
         for (var i = 0; i < words.length; i++) {
+            /* ignore '#' and blank lines */
             if(! (words[i].match(/^#/) || (! words[i]))) {
+                /* options are only on lines that start with blockquotes '>' */
                 if( words[i].match(/^>\S+/) ) {
                     options.push(words[i].replace(/^>/, ''));
                 }
@@ -131,16 +135,13 @@
         /* 1. THEME */
         /* check theme name or url */
         var direct_url = theme;
-        var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' + theme + '/bootstrap.min.css'
+        var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' +
+            theme + '/bootstrap.min.css';
     
         /* who knows if this actually validates a url? */
         var theme_url = '';
         function valid_url(url){
             return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
-        }
-        function add_style(url){
-            new_style = '<link rel="stylesheet" href="'+url+'" type="text/css" media="screen" />';
-            $('head').append(new_style);
         }
 
         /* see if the user specifies the full url */
@@ -152,6 +153,11 @@
             theme_url = name_url;
         }
         
+        function add_style(url){
+            new_style = '<link rel="stylesheet" href="' + url +
+                '" type="text/css" media="screen" />';
+            $('head').append(new_style);
+        }
         add_style(theme_url);
 
         /* 2. NAVIGATION */
@@ -219,32 +225,36 @@
 
 <script type="text/javascript">
 
-    $(document).ready(getConfig);
+    /* start things off with the Config file */
+    $(document).ready(getFile('Config', parseConfig));
 
 </script>
 
 <script type="text/javascript">
 
-    /* This script loads a Markdown file and translates it to HTML using
-     * Showdown JS, given an input filename. */
+    function writeMarkdownToTag(text, markdown_div) {
+
+        /* translate markdown */
+        var converter = new showdown.Converter(),
+            html = converter.makeHtml(text);
+
+        /* fill in the specified div */
+        var node = document.getElementById(markdown_div);
+        node.innerHTML = html;
+        $('#'+markdown_div).show();
+    }
+
+</script>
+
+<script type="text/javascript">
+
     function toHTML(pageName, markdown_div)
     {
-        var req = new XMLHttpRequest();
-
-        req.onload = function() {
-            var node = document.getElementById(markdown_div);
-            
-            /* translate markdown */
-            var converter = new showdown.Converter(),
-                text = this.responseText,
-                html = converter.makeHtml(text);
-
-            node.innerHTML = html;
-            $('#'+markdown_div).show();
-        }
-
-        req.open('GET', pageName, true);
-        req.send();
+        /* download a markdown file, convert to HTML,
+           then post to given div-id */
+        var callback = function (text)
+            { writeMarkdownToTag(text, markdown_div); };
+        getFile(pageName, callback);
     }
 
 </script>
