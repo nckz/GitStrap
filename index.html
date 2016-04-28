@@ -16,8 +16,7 @@
     <!-- Showdownjs for Markdown conversion -->
     <script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
 
-    <!-- markdown extras -->
-    <style> /* Use these "fitw<%>" attributes for the alt text to scale an image */
+    <style> /* markdown extras - Use these "fitw<%>" attributes for the alt text to scale an image */
     img[alt=fitwidth] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto }
     img[alt=fitw100] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto}
     img[alt=fitw75] { width: 75%; float: center; display: block; margin-left: auto; margin-right: auto}
@@ -25,10 +24,12 @@
     img[alt=fitw25] { width: 25%; float: center; display: block; margin-left: auto; margin-right: auto}
     img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto}
 
-    /* let the nav toggle show up */ 
-    .icon-bar {
-        background-color: black;
-    } 
+    /* make an "active" tab */
+    .active-nav {
+        -webkit-filter: opacity(75%); /* Chrome, Safari, Opera */
+        filter: opacity(75%);
+    }
+
     </style>
 
 </head>
@@ -47,10 +48,10 @@
         <div class="container-fluid">
 
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>                        
+                <button type="button" class="navbar-toggle" type="button"
+                    data-toggle="collapse"
+                    data-target="#myNavbar">
+                    &#9776;
                 </button>
                 <h2 class="text-muted main-title">GitStrap</h2>
             </div><!-- navbar-header -->
@@ -98,6 +99,15 @@
         req.send();
 
     } /* getFile() */
+
+    function appendAttribute(elem, name, value) {
+        var attr = elem.getAttribute(name);
+        if (attr == null) {
+            elem.setAttribute(name, value);
+        } else {
+            elem.setAttribute(name, attr + " " + value);
+        }
+    }
 
     /* act on all options given in the Config file */
     function parseConfig(text) {
@@ -174,9 +184,7 @@
         /* create buttons for each item and append to navbar */
         function appendNavLinks(item, index, arr) {
 
-            /* find out if client has asked for a specific page. 
-             * SO: get-url-variables-from-url-to-form-with-jquery 
-             */
+            /* find out if client has asked for a specific page. */
             function getURLParameter(name) {
                 return decodeURI((RegExp(name + '=' +
                     '(.+?)(&|$)').exec(location.search)||[,null])[1]);
@@ -190,23 +198,30 @@
             var a  = document.createElement('a');
 
             /* select active page and nav buttons */
+            appendAttribute(a, 'class', 'active-nav');
+
             if (page_found) {
             if (req_page == item) {
-                li.setAttribute('class', 'active');
+                a.removeAttribute('class');
+                appendAttribute(li, 'class', 'active');
                 toHTML( item, 'markdown_body');
             } }
             else if (index == 0) {
-                li.setAttribute('class', 'active');
+                a.removeAttribute('class');
+                appendAttribute(li, 'class', 'active');
                 toHTML( item, 'markdown_body'); 
             }
-            li.setAttribute('id', 'navitem');
+
+            appendAttribute(li, 'id', 'navitem');
+            appendAttribute(li, 'class', 'nav-item');
 
             /* setup nav links for each button */
-            a.setAttribute('href', '?page='+item+'#');
-            a.setAttribute('data-toggle','tab');
-            a.setAttribute('style','z-index: 1000;'); /* make sure the ribbon
-                                                       * doesn't get in the way
-                                                       */
+            appendAttribute(a, 'class', 'nav-link');
+            appendAttribute(a, 'href', '?page='+item+'#');
+            appendAttribute(a, 'data-toggle','tab');
+            appendAttribute(a, 'style', 'z-index: 1000;'); /* make sure the
+                                                            * ribbon doesn't
+                                                            * get in the way */
             a.innerHTML = item;
 
             li.appendChild(a);
@@ -219,6 +234,7 @@
             toHTML( header, 'markdown_header');
         }
 
+        /* 4. FOOTER */
         if (footer != 'false') {
             toHTML( footer, 'markdown_footer');
         }
