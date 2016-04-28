@@ -109,43 +109,18 @@
         }
     }
 
-    /* act on all options given in the Config file */
-    function parseConfig(text) {
-
-        /* Split config file into options. */
-        var options = [];
-        var words = text.split('\n');
-        for (var i = 0; i < words.length; i++) {
-            /* ignore '#' and blank lines */
-            if(! (words[i].match(/^#/) || (! words[i]))) {
-                /* options are only on lines that start with blockquotes '>' */
-                if( words[i].match(/^>\S+/) ) {
-                    options.push(words[i].replace(/^>/, ''));
-                }
-            }
-        }
-
-        /* line 0: title 
-         * line 1: nav filenames
-         * line 2: theme name or url
-         * line 3: header filename
-         * line 4: footer filename
-         */
-        var title = options[0];
-        var nav_items = options[1].split(' '); 
-        var theme = options[2];
-        var header = options[3];
-        var footer = options[4];
-
-        /* 0. TITLE - change title to user config */
+    /* 0. TITLE - change title to user config */
+    function setTitle(title) {
         $('.main-title').html(title);
 
         if (title == 'GitStrap') {
             $('#github_ribbon').show()
         }
+    }
 
-        /* 1. THEME - get the theme loaded first to ensure css is setup before
-         * adding other elements. */
+    /* 1. THEME - get the theme loaded first to ensure css is setup before
+     * adding other elements. */
+    function setTheme(theme) {
 
         /* check for theme name or url */
         var direct_url = theme;
@@ -173,22 +148,22 @@
             $('head').append(new_style);
         }
         add_style(theme_url);
+    }
 
-        /* 2. NAVIGATION */
-        /* navigation object handle */
-        var navbar_obj = document.getElementById('nav-placeholder');
+    /* find out if client has asked for a specific page. */
+    function getURLParameter(name) {
+        return decodeURI((RegExp(name + '=' +
+            '(.+?)(&|$)').exec(location.search)||[,null])[1]);
+    }
 
-        /* loop over nav items found in the list */
-        nav_items.forEach(appendNavLinks);
+    /* 2. NAVIGATION */
+    /* create buttons for each item and append to navbar */
+    function populateNavLinks(nav_items) {
 
-        /* create buttons for each item and append to navbar */
-        function appendNavLinks(item, index, arr) {
+        for (index=0;index<nav_items.length;index++) {
 
-            /* find out if client has asked for a specific page. */
-            function getURLParameter(name) {
-                return decodeURI((RegExp(name + '=' +
-                    '(.+?)(&|$)').exec(location.search)||[,null])[1]);
-            }
+            var item = nav_items[index];
+
             var req_page = getURLParameter('page');
 
             /* validate the requested page by checking against the nav list */
@@ -204,12 +179,12 @@
             if (req_page == item) {
                 a.removeAttribute('class');
                 appendAttribute(li, 'class', 'active');
-                toHTML( item, 'markdown_body');
+                toHTML(req_page, 'markdown_body'); 
             } }
             else if (index == 0) {
                 a.removeAttribute('class');
                 appendAttribute(li, 'class', 'active');
-                toHTML( item, 'markdown_body'); 
+                toHTML(req_page, 'markdown_body'); 
             }
 
             appendAttribute(li, 'id', 'navitem');
@@ -225,24 +200,79 @@
             a.innerHTML = item;
 
             li.appendChild(a);
+
+            var navbar_obj = document.getElementById('nav-placeholder');
             navbar_obj.appendChild(li);
         }
+    }
 
-        /* 3. HEADER */
-        /* Write the Jumbotron content. */
+    /* 3. HEADER */
+    /* Write the Jumbotron content. */
+    function setHeader(header) {
         if (header != 'false') {
             toHTML( header, 'markdown_header');
         }
+    }
 
-        /* 4. FOOTER */
+    /* 4. FOOTER */
+    function setFooter(footer) {
         if (footer != 'false') {
             toHTML( footer, 'markdown_footer');
         }
+    }
+
+    /* 5. BLOG */
+    function populateBlogIndex(blog) {
+        if (blog[0] != 'false') {
+            for (i=0;i<blog.length;i++) {
+                console.log(blog[i]);
+
+            }
+        }
+    }
+
+    /* act on all options given in the Config file */
+    function parseConfig(text) {
+
+        /* Split config file into options. */
+        var options = [];
+        var words = text.split('\n');
+        for (var i = 0; i < words.length; i++) {
+            /* ignore '#' and blank lines */
+            if(! (words[i].match(/^#/) || (! words[i]))) {
+                /* options are only on lines that start with blockquotes '>' */
+                if( words[i].match(/^>\S+/) ) {
+                    options.push(words[i].replace(/^>/, ''));
+                }
+            }
+        }
+
+        /* line 0: title 
+         * line 1: nav filenames
+         * line 2: theme name or url
+         * line 3: header filename
+         * line 4: footer filename
+         * line 5: blog filenames
+         */
+        var title = options[0];
+        var nav_items = options[1].split(' '); 
+        var theme = options[2];
+        var header = options[3];
+        var footer = options[4];
+        var blog = options[5].split(' ');
+
+        /* process options */
+        setTitle(title);
+        setTheme(theme);
+        populateNavLinks(nav_items);
+        setHeader(header);
+        setFooter(footer);
+        populateBlogIndex(blog);
 
     } /* parseConfig() */
 
+    /* translate markdown text to html then fillDiv() */
     function writeMarkdownToTag(text, markdown_div) {
-        /* translate markdown */
         var converter = new showdown.Converter(),
             html = converter.makeHtml(text);
         fillDiv(html, markdown_div);
@@ -264,7 +294,7 @@
     }
 
     /* Link tab actions. */
-    $(document).on('show.bs.tab', 'a[data-toggle="tab"]', function (e) {
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var href = $(e.target).attr('href');
         window.location.assign(href);
     })

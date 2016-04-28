@@ -25,6 +25,10 @@ what shows up on the navigation tab.
 
     Example: >Home Contacts About
 
+Use the keyword 'BLOG' to place the link for a blog index.
+
+    Example: >Home Contacts About BLOG
+
 This setup uses the following:
 
 ```
@@ -65,4 +69,21 @@ This setup uses the following:
 
 ```
 >Footer
+```
+
+## Blog
+If a blog is desired, the post files (stored in `/posts/` directory) will be
+included in the same way as navigation items.  Include the desired blog entires
+by adding them to the list.  If a blog is not required, set the option to
+`false`.
+
+    Example: >false
+
+The blog index link is named by the first element in the post list:
+
+    Example: >Index post1 post2 post3 post4
+
+This setup uses the following:
+```
+>Index post1 post2
 ```
