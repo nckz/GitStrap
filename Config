@@ -27,12 +27,12 @@ what shows up on the navigation tab.
 
 Use the keyword 'BLOG' to place the link for a blog index.
 
-    Example: >Home Contacts About BLOG
+    Example: >Home Contacts BLOG About 
 
 This setup uses the following:
 
 ```
->Readme.md Config Header Footer Example
+>Readme.md Config Header Footer Example BLOG
 ```
 
 ## Theme

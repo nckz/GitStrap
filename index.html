@@ -16,6 +16,10 @@
     <!-- Showdownjs for Markdown conversion -->
     <script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
 
+    <!-- YAML front matter for posts
+         https://github.com/dworthen/js-yaml-front-matter -->
+    <script src="js/js-yaml-front-client.min.js"></script>
+
     <style> /* markdown extras - Use these "fitw<%>" attributes for the alt text to scale an image */
     img[alt=fitwidth] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto }
     img[alt=fitw100] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto}
@@ -156,26 +160,75 @@
             '(.+?)(&|$)').exec(location.search)||[,null])[1]);
     }
 
+    function blogON(blog_items) {
+        return blog_items[0] != 'false';
+    }
+
+    function determineActivePage(nav_items, blog_items) {
+
+        /* check for requested posts */
+        var post_found = 0;
+        var post_index = -1;
+        var req_post = getURLParameter('post');
+        if (! (req_post == 'null' || req_post == null)) {
+            post_index = blog_items.indexOf(req_post);
+            if (post_index > 0) { /* skip the post-index-page title (elem 0) */
+                post_found = 1;
+            }
+        }
+        console.log('req_post: '+ req_post);
+
+        /* pages take precedence */
+        var page_found = 0;
+        var page_index = -1;
+        var req_page = getURLParameter('page');
+        if (! (req_page == 'null' || req_page == null)) {
+            page_index = nav_items.indexOf(req_page);
+            if (page_index >= 0) {
+                page_found = 1;
+            }
+        }
+
+        console.log('req_page: '+req_page);
+
+        /* select page */
+        active_page = nav_items[0]; /* default landing page */
+        if (post_found) {
+            active_page = blog_items[post_index];
+        }
+        if (page_found) {
+            active_page = nav_items[page_index];
+        console.log('active_page pf: '+active_page);
+            if (active_page == 'BLOG') {
+                active_page = blog_items[0];
+            }
+        }
+        console.log('active_page: '+active_page);
+
+        return active_page;
+    }
+
     /* 2. NAVIGATION */
-    /* create buttons for each item and append to navbar */
-    function populateNavLinks(nav_items) {
+    /* create buttons for each item and append to navbar and return the name
+     * of the active page. */
+    function populateNavLinks(nav_items, blog_items) {
 
         var navbar_obj = document.getElementById('nav-placeholder');
-
-        /* if the query string isn't found then default to landing page */
-        var req_page = getURLParameter('page');
-        if (req_page == 'null' || req_page == null) {
-            req_page = nav_items[0];
-        }
+        var req_page = determineActivePage(nav_items, blog_items);
 
         for (index=0;index<nav_items.length;index++) {
 
-            var item = nav_items[index];
             var li = document.createElement('li');
             var a  = document.createElement('a');
 
             /* select active page and nav buttons */
             appendAttribute(a, 'class', 'non-active-nav');
+
+            /* check for blog nav items */
+            var item = nav_items[index];
+            if (item == 'BLOG') {
+                item = blog_items[0];
+            }
 
             /* make the nav tab show up as 'active' by excluding it from
              * the non-active-nav class. */
@@ -201,7 +254,7 @@
             li.appendChild(a);
             navbar_obj.appendChild(li);
         }
-        toHTML(req_page, 'markdown_body'); 
+        return req_page;
     }
 
     /* 3. HEADER */
@@ -220,11 +273,17 @@
     }
 
     /* 5. BLOG */
-    function populateBlogIndex(blog) {
-        if (blog[0] != 'false') {
-            for (i=0;i<blog.length;i++) {
-                console.log(blog[i]);
+    function populateBlogIndex(blog_items) {
+        if (blogON(blog_items)) {
 
+            var md_body_obj = document.getElementById('markdown_body');
+            var ul = document.createElement('ul');
+            md_body_obj.appendChild(ul);
+            for (i=0;i<blog_items.length;i++) {
+                var li = document.createElement('li');
+                li.innerHTML = blog_items[i];
+
+                ul.appendChild(li);
             }
         }
     }
@@ -257,16 +316,26 @@
         var theme = options[2];
         var header = options[3];
         var footer = options[4];
-        var blog = options[5].split(' ');
+        var blog_items = options[5].split(' ');
 
         /* process options */
         setTitle(title);
         setTheme(theme);
-        populateNavLinks(nav_items);
+        var active_page = populateNavLinks(nav_items, blog_items);
         setHeader(header);
         setFooter(footer);
-        populateBlogIndex(blog);
 
+        console.log('active_page: '+active_page);
+
+        /* if the blog index page is chosen */
+        if (active_page == blog_items[0]) {
+            populateBlogIndex(blog_items);
+        } else {
+            /* The active page needs to correspond to a file at this point so 
+            * that the getter can download it.  The getter should be post aware.
+            */
+            toHTML(active_page, 'markdown_body'); 
+        }
     } /* parseConfig() */
 
     /* translate markdown text to html then fillDiv() */
@@ -290,6 +359,20 @@
             { writeMarkdownToTag(text, markdown_div); };
         getFile(pageName, callback);
     }
+
+    /* download a markdown file, convert to HTML, then post to given div-id */
+    function toFrontMatter(pageName)
+    {
+        var callback = function (text)
+        { 
+           var obj =  jsyaml.loadFront(text)
+            console.log(obj); 
+          console.log(obj.__content); 
+        };
+        getFile(pageName, callback);
+    }
+    toFrontMatter('posts/GPI-v1-Release.md');
+    
 
     /* Link tab actions. */
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
