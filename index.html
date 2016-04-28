@@ -25,7 +25,7 @@
     img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto}
 
     /* make an "active" tab */
-    .active-nav {
+    .non-active-nav {
         -webkit-filter: opacity(75%); /* Chrome, Safari, Opera */
         filter: opacity(75%);
     }
@@ -150,7 +150,7 @@
         add_style(theme_url);
     }
 
-    /* find out if client has asked for a specific page. */
+    /* Parse the query string for 'name' */
     function getURLParameter(name) {
         return decodeURI((RegExp(name + '=' +
             '(.+?)(&|$)').exec(location.search)||[,null])[1]);
@@ -160,31 +160,28 @@
     /* create buttons for each item and append to navbar */
     function populateNavLinks(nav_items) {
 
+        var navbar_obj = document.getElementById('nav-placeholder');
+
+        /* if the query string isn't found then default to landing page */
+        var req_page = getURLParameter('page');
+        if (req_page == 'null' || req_page == null) {
+            req_page = nav_items[0];
+        }
+
         for (index=0;index<nav_items.length;index++) {
 
             var item = nav_items[index];
-
-            var req_page = getURLParameter('page');
-
-            /* validate the requested page by checking against the nav list */
-            var page_found = $.inArray(req_page, nav_items) > -1;
-
             var li = document.createElement('li');
             var a  = document.createElement('a');
 
             /* select active page and nav buttons */
-            appendAttribute(a, 'class', 'active-nav');
+            appendAttribute(a, 'class', 'non-active-nav');
 
-            if (page_found) {
+            /* make the nav tab show up as 'active' by excluding it from
+             * the non-active-nav class. */
             if (req_page == item) {
                 a.removeAttribute('class');
                 appendAttribute(li, 'class', 'active');
-                toHTML(req_page, 'markdown_body'); 
-            } }
-            else if (index == 0) {
-                a.removeAttribute('class');
-                appendAttribute(li, 'class', 'active');
-                toHTML(req_page, 'markdown_body'); 
             }
 
             appendAttribute(li, 'id', 'navitem');
@@ -194,16 +191,17 @@
             appendAttribute(a, 'class', 'nav-link');
             appendAttribute(a, 'href', '?page='+item+'#');
             appendAttribute(a, 'data-toggle','tab');
-            appendAttribute(a, 'style', 'z-index: 1000;'); /* make sure the
-                                                            * ribbon doesn't
-                                                            * get in the way */
+
+            /* make sure the ribbon doesn't get in the way */
+            appendAttribute(a, 'style', 'z-index: 1000;');
+
+            /* set nav button name */
             a.innerHTML = item;
 
             li.appendChild(a);
-
-            var navbar_obj = document.getElementById('nav-placeholder');
             navbar_obj.appendChild(li);
         }
+        toHTML(req_page, 'markdown_body'); 
     }
 
     /* 3. HEADER */
