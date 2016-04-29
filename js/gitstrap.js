@@ -99,6 +99,32 @@ function MarkdownToHTML(relpath, markdown_div)
     getFile(relpath, callback);
 }
 
+/* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
+ * post to given div-id. */
+function PostToHTML(relpath, markdown_body) {
+    var callback = function (text) {
+
+        /* write some HTML to format the data */
+        var body = document.getElementById(markdown_body);
+        var post_head = document.createElement('div');
+        var post_body = document.createElement('div');
+        body.appendChild(post_head);
+        body.appendChild(post_body);
+
+        /* parse YAML header */
+        var obj = jsyaml.loadFront(text)
+        post_head.innerHTML = '<b>'+obj.Title + '</b><br> ' + obj.Author + 
+            '   - <small>' + obj.Date.toDateString() + '</small><br><br>';
+
+        /* convert the unparsed content as markdown */
+        var converter = new showdown.Converter();
+        post_body.innerHTML = converter.makeHtml(obj.__content);
+
+    };
+    getFile(relpath, callback);
+};
+
+
 /* 2. NAVIGATION */
 /* create buttons for each item and append to navbar and return the name
     * of the active page. */
@@ -148,21 +174,6 @@ function populateNavLinks(nav_items, blog_items) {
     return req_page;
 }
 
-/* 3. HEADER */
-/* Write the Jumbotron content. */
-function setHeader(header) {
-    if (header != 'false') {
-        MarkdownToHTML( header, 'markdown_header');
-    }
-}
-
-/* 4. FOOTER */
-function setFooter(footer) {
-    if (footer != 'false') {
-        MarkdownToHTML( footer, 'markdown_footer');
-    }
-}
-
 /* OBJECTS ----------------------------------------------------------------- */
 /* Config object
  * 'Config' file parser object */
@@ -179,6 +190,7 @@ function Config(filename) {
     this.footer = "";     // string filename
     this.blog_items = []; // list of strings, filenames of posts
     this.requested_page = ""; // the client requested page based on url query
+    this.post_active = false; // signal if a post is active, set by determineActivePage().
 
     this.parseFile = function (text) {
 
@@ -218,6 +230,14 @@ function Config(filename) {
 
     }; // - parseFile()
 
+    this.headerIsActive = function() {
+        return self.header != 'false';
+    };
+
+    this.footerIsActive = function() {
+        return self.footer != 'false';
+    };
+
     this.determineActivePage = function() {
         /* This function verifies whether the url query resolves to an existing
          * page. If not, the landing page is selected. If there is both a
@@ -249,9 +269,11 @@ function Config(filename) {
         active_page = self.nav_items_bname[0]; /* default landing page */
         if (post_found) {
             active_page = self.blog_items[post_index];
+            self.post_active = true;
         }
         if (page_found) {
             active_page = self.nav_items_bname[page_index];
+            self.post_active = false;
         }
 
         self.requested_page = active_page;
@@ -269,13 +291,17 @@ function Config(filename) {
     };
     
     /* Return true if the blog index was requested */
-    this.blogIndexActive = function() {
+    this.blogIndexIsActive = function() {
         if (self.isBlog()) {
             if (self.requested_page == self.blog_items[0]) {
                 return true;
             }
         }
         return false;
+    };
+
+    this.postIsActive = function() {
+        return self.post_active;
     };
 
     /* Initialize with Config data. This is the first required step for setting
@@ -394,20 +420,28 @@ function gitstrap() {
     setTitle(gsConfig.title);
     setTheme(gsConfig.theme);
 
-    /* fill in the nav */
+    /* fill in the navbar */
     var gsNav = new Nav(gsConfig);
 
     /* async GETs */
-    setHeader(gsConfig.header);
-    setFooter(gsConfig.footer);
+    if (gsConfig.headerIsActive()) {
+        MarkdownToHTML(gsConfig.header, 'markdown_header');
+    }
+    if (gsConfig.footerIsActive()) {
+        MarkdownToHTML(gsConfig.footer, 'markdown_footer');
+    }
 
-    /* if the blog index page is chosen */
-    if (gsConfig.blogIndexActive()) {
+    /* Fill the body content with either a blog-index, post or page. */
+    if (gsConfig.blogIndexIsActive()) {
+        /* If the blog index page is requested and the blog is turned on in the
+         * Config, write the index. */
         var gsBlogIndex = new BlogIndex(gsConfig);
+    } else if (gsConfig.postIsActive()) {
+        /* If a post was found in the url query. */
+        PostToHTML(gs_post_path+'/'+gsConfig.requested_page, 'markdown_body');
     } else {
         /* The active page needs to correspond to a file at this point so 
-         * that the getter can download it.  The getter should be post aware.
-         */
+         * that the getter can download it.  The getter should be post aware.*/
         MarkdownToHTML(gsConfig.requested_page, 'markdown_body'); 
     }
 } // - gitstrap()
