@@ -8,6 +8,7 @@
 
 /* GLOBAL ------------------------------------------------------------------ */
 var gs_blog_keyword = 'GSBLOG';
+var gs_post_path = 'posts';
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
@@ -98,30 +99,6 @@ function MarkdownToHTML(relpath, markdown_div)
     getFile(relpath, callback);
 }
 
-/* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
- * post to given div-id. */
-function PostToHTML(relpath, markdown_div)
-{
-    var callback = function (text) {
-
-        /* parse YAML header */
-        var obj = jsyaml.loadFront(text)
-
-        /* write some HTML to format the data */
-        var md_body_obj = document.getElementById('markdown_body');
-        var ul = document.createElement('ul');
-        md_body_obj.appendChild(ul);
-        var li = document.createElement('li');
-        ul.appendChild(li);
-
-        li.innerHTML = '<b>'+obj.Title + '</b><br> ' + obj.Author + ' - <small>' + obj.Date.toDateString() + '</small><br><i>' + obj.Summary + '</i>';
-
-        console.log(obj); 
-
-    };
-    getFile(relpath, callback);
-}
-
 /* 2. NAVIGATION */
 /* create buttons for each item and append to navbar and return the name
     * of the active page. */
@@ -183,22 +160,6 @@ function setHeader(header) {
 function setFooter(footer) {
     if (footer != 'false') {
         MarkdownToHTML( footer, 'markdown_footer');
-    }
-}
-
-/* 5. BLOG */
-function populateBlogIndex(blog_items) {
-    if (blogON(blog_items)) {
-
-        var md_body_obj = document.getElementById('markdown_body');
-        var ul = document.createElement('ul');
-        md_body_obj.appendChild(ul);
-        for (i=0;i<blog_items.length;i++) {
-            var li = document.createElement('li');
-            li.innerHTML = blog_items[i];
-
-            ul.appendChild(li);
-        }
     }
 }
 
@@ -384,14 +345,50 @@ function BlogIndex(conf) {
 
     this.conf = conf;
 
-    
+    this.genBlogIndex = function() {
 
+        /* write some HTML to format the data */
+        var md_body_obj = document.getElementById('markdown_body');
+        var ul = document.createElement('ul');
+        appendAttribute(ul, 'class', 'list-group');
+        md_body_obj.appendChild(ul);
+
+        for (index = 1; index < self.conf.blog_items.length; index++) {
+            var item = self.conf.blog_items[index];
+            var li = document.createElement('li');
+            li.setAttribute('id', item);
+            appendAttribute(li, 'class', 'list-group-item');
+            ul.appendChild(li);
+
+
+            self.PostPreviewToHTML(gs_post_path+'/'+item, item);
+        }
+    };
+
+    /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
+     * post to given div-id. */
+    this.PostPreviewToHTML = function(relpath, markdown_div) {
+        var callback = function (text) {
+
+            /* parse YAML header */
+            var obj = jsyaml.loadFront(text)
+
+            /* write some HTML to format the data */
+            var li = document.getElementById(markdown_div);
+            li.innerHTML = '<b>'+obj.Title + '</b><br> ' + obj.Author + 
+                '   - <small>' + obj.Date.toDateString() + '</small><br><i>' +
+                obj.Summary + '</i>';
+
+        };
+        getFile(relpath, callback);
+    };
+
+    this.genBlogIndex();
 }
 
 /* MAIN -------------------------------------------------------------------- */
 function gitstrap() {
     var gsConfig = new Config('Config');
-    console.log(gsConfig);
 
     /* make sure these show up before more expensive processes happen */
     setTitle(gsConfig.title);
@@ -399,18 +396,14 @@ function gitstrap() {
 
     /* fill in the nav */
     var gsNav = new Nav(gsConfig);
-    console.log(gsNav);
 
     /* async GETs */
     setHeader(gsConfig.header);
     setFooter(gsConfig.footer);
 
-    PostToHTML('posts/GPI-v1-Release.md', 'markdown_body');
-
-    return;
     /* if the blog index page is chosen */
     if (gsConfig.blogIndexActive()) {
-        populateBlogIndex(gsConfig.blog_items);
+        var gsBlogIndex = new BlogIndex(gsConfig);
     } else {
         /* The active page needs to correspond to a file at this point so 
          * that the getter can download it.  The getter should be post aware.

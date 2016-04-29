@@ -85,5 +85,5 @@ The blog index link is named by the first element in the post list:
 
 This setup uses the following:
 ```
->Index post1 post2
+>Blog GPI-v1-Release.md GPI-and-the-BART.md
 ```
