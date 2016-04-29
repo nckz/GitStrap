@@ -374,7 +374,7 @@ function gitstrap() {
     var gsNav = new Nav(gsConfig);
 
     /* async GETs */
-    if (gsConfig.headerIsActive()) {
+    if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
         MarkdownToHTML(gsConfig.header, 'markdown_header');
     }
     if (gsConfig.footerIsActive()) {
