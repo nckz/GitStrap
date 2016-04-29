@@ -1,5 +1,13 @@
-/* get the file and send the text to the callback */
-function getFile(filename, callback) {
+/* GitStrap.js 
+ * requires:
+ *  jQuery 1.12.0
+ *  bootstrap 3.3.6
+ *  showdown 1.3.0
+ *  js-yaml-front-client 3.4.0
+ */
+
+/* A file getter that dumps 404 errors to a tagged div on the index.html. */
+function getFile(filename, callback, async = true) {
 
     /* If the config file can be downloaded send its text to the callback.
         */
@@ -12,11 +20,64 @@ function getFile(filename, callback) {
         }
     }
 
-    req.open('GET',filename,true);
+    req.open('GET',filename,async);
     req.send();
 
-} /* getFile() */
+} // - getFile()
 
+
+/* Config object
+ * 'Config' file parser object */
+function Config(filename) {
+
+    var self = this;
+
+    this.filename = filename
+    this.title = "";      // string
+    this.nav_items = [];  // list of string, filenames/nav-tab-titles
+    this.theme = "";      // string theme-name or url
+    this.header = "";     // string filename
+    this.footer = "";     // string filename
+    this.blog_items = []; // list of strings, filenames of posts
+
+    this.parseFile = function (text) {
+
+        /* Split config file into options. */
+        var options = [];
+        var words = text.split('\n');
+        for (var i = 0; i < words.length; i++) {
+            /* ignore '#' and blank lines */
+            if(! (words[i].match(/^#/) || (! words[i]))) {
+                /* options are only on lines that start with blockquotes '>' */
+                if( words[i].match(/^>\S+/) ) {
+                    options.push(words[i].replace(/^>/, ''));
+                }
+            }
+        }
+
+        /* line 0: title 
+         * line 1: nav filenames
+         * line 2: theme name or url
+         * line 3: header filename
+         * line 4: footer filename
+         * line 5: blog filenames
+         */
+        self.title = options[0];
+        self.nav_items = options[1].split(' '); 
+        self.theme = options[2];
+        self.header = options[3];
+        self.footer = options[4];
+        self.blog_items = options[5].split(' ');
+
+    }; // - parseFile()
+
+    /* Initialize with Config data. This is the first required step for setting
+     * up the website. -It is therefore required to be synchronous. */
+    getFile(self.filename, self.parseFile, false);
+
+} // - Config()
+
+/* Add a value to an existing attribute */
 function appendAttribute(elem, name, value) {
     var attr = elem.getAttribute(name);
     if (attr == null) {
@@ -24,7 +85,7 @@ function appendAttribute(elem, name, value) {
     } else {
         elem.setAttribute(name, attr + " " + value);
     }
-}
+} // - appendAttribute()
 
 /* 0. TITLE - change title to user config */
 function setTitle(title) {
@@ -33,7 +94,8 @@ function setTitle(title) {
     if (title == 'GitStrap') {
         $('#github_ribbon').show()
     }
-}
+} // - setTitle()
+
 
 /* 1. THEME - get the theme loaded first to ensure css is setup before
     * adding other elements. */
@@ -89,7 +151,6 @@ function determineActivePage(nav_items, blog_items) {
             post_found = 1;
         }
     }
-    console.log('req_post: '+ req_post);
 
     /* pages take precedence */
     var page_found = 0;
@@ -102,8 +163,6 @@ function determineActivePage(nav_items, blog_items) {
         }
     }
 
-    console.log('req_page: '+req_page);
-
     /* select page */
     active_page = nav_items[0]; /* default landing page */
     if (post_found) {
@@ -111,13 +170,10 @@ function determineActivePage(nav_items, blog_items) {
     }
     if (page_found) {
         active_page = nav_items[page_index];
-    console.log('active_page pf: '+active_page);
         if (active_page == 'BLOG') {
             active_page = blog_items[0];
         }
     }
-    console.log('active_page: '+active_page);
-
     return active_page;
 }
 
@@ -201,56 +257,6 @@ function populateBlogIndex(blog_items) {
     }
 }
 
-/* act on all options given in the Config file */
-function parseConfig(text) {
-
-    /* Split config file into options. */
-    var options = [];
-    var words = text.split('\n');
-    for (var i = 0; i < words.length; i++) {
-        /* ignore '#' and blank lines */
-        if(! (words[i].match(/^#/) || (! words[i]))) {
-            /* options are only on lines that start with blockquotes '>' */
-            if( words[i].match(/^>\S+/) ) {
-                options.push(words[i].replace(/^>/, ''));
-            }
-        }
-    }
-
-    /* line 0: title 
-        * line 1: nav filenames
-        * line 2: theme name or url
-        * line 3: header filename
-        * line 4: footer filename
-        * line 5: blog filenames
-        */
-    var title = options[0];
-    var nav_items = options[1].split(' '); 
-    var theme = options[2];
-    var header = options[3];
-    var footer = options[4];
-    var blog_items = options[5].split(' ');
-
-    /* process options */
-    setTitle(title);
-    setTheme(theme);
-    var active_page = populateNavLinks(nav_items, blog_items);
-    setHeader(header);
-    setFooter(footer);
-
-    console.log('active_page: '+active_page);
-
-    /* if the blog index page is chosen */
-    if (active_page == blog_items[0]) {
-        populateBlogIndex(blog_items);
-    } else {
-        /* The active page needs to correspond to a file at this point so 
-        * that the getter can download it.  The getter should be post aware.
-        */
-        toHTML(active_page, 'markdown_body'); 
-    }
-} /* parseConfig() */
-
 /* translate markdown text to html then fillDiv() */
 function writeMarkdownToTag(text, markdown_div) {
     var converter = new showdown.Converter(),
@@ -284,7 +290,7 @@ function toFrontMatter(pageName)
     };
     getFile(pageName, callback);
 }
-toFrontMatter('posts/GPI-v1-Release.md');
+//toFrontMatter('posts/GPI-v1-Release.md');
 
 
 /* Link tab actions. */
@@ -293,5 +299,25 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
     window.location.assign(href);
 })
 
-/* start things off with the Config file */
-$(document).ready(getFile('Config', parseConfig));
+
+/* MAIN */
+function gitstrap() {
+    var gsConfig = new Config('Config');
+    setTitle(gsConfig.title);
+    setTheme(gsConfig.theme);
+    var active_page = populateNavLinks(gsConfig.nav_items,gsConfig.blog_items);
+    setHeader(gsConfig.header);
+    setFooter(gsConfig.footer);
+
+    /* if the blog index page is chosen */
+    if (active_page == gsConfig.blog_items[0]) {
+        populateBlogIndex(gsConfig.blog_items);
+    } else {
+        /* The active page needs to correspond to a file at this point so 
+         * that the getter can download it.  The getter should be post aware.
+         */
+        toHTML(active_page, 'markdown_body'); 
+    }
+} // - gitstrap()
+
+$(document).ready(gitstrap);
