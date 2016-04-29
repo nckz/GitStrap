@@ -122,56 +122,6 @@ function PostToHTML(relpath, markdown_body) {
 
     };
     getFile(relpath, callback);
-};
-
-
-/* 2. NAVIGATION */
-/* create buttons for each item and append to navbar and return the name
-    * of the active page. */
-function populateNavLinks(nav_items, blog_items) {
-
-    var navbar_obj = document.getElementById('nav-placeholder');
-    var req_page = determineActivePage(nav_items, blog_items);
-
-    for (index=0;index<nav_items.length;index++) {
-
-        var li = document.createElement('li');
-        var a  = document.createElement('a');
-
-        /* select active page and nav buttons */
-        appendAttribute(a, 'class', 'non-active-nav');
-
-        /* check for blog nav items */
-        var item = nav_items[index];
-        if (item == gs_blog_keyword) {
-            item = blog_items[0];
-        }
-
-        /* make the nav tab show up as 'active' by excluding it from
-            * the non-active-nav class. */
-        if (req_page == item) {
-            a.removeAttribute('class');
-            appendAttribute(li, 'class', 'active');
-        }
-
-        appendAttribute(li, 'id', 'navitem');
-        appendAttribute(li, 'class', 'nav-item');
-
-        /* setup nav links for each button */
-        appendAttribute(a, 'class', 'nav-link');
-        appendAttribute(a, 'href', '?page='+item+'#');
-        appendAttribute(a, 'data-toggle','tab');
-
-        /* make sure the ribbon doesn't get in the way */
-        appendAttribute(a, 'style', 'z-index: 1000;');
-
-        /* set nav button name */
-        a.innerHTML = item;
-
-        li.appendChild(a);
-        navbar_obj.appendChild(li);
-    }
-    return req_page;
 }
 
 /* OBJECTS ----------------------------------------------------------------- */
@@ -401,7 +351,7 @@ function BlogIndex(conf) {
 
             /* write some HTML to format the data */
             var li = document.getElementById(markdown_div);
-            li.innerHTML = '<b>'+obj.Title + '</b><br> ' + obj.Author + 
+            li.innerHTML = '<a href=?post='+markdown_div+'><b>'+obj.Title + '</b></a><br> ' + obj.Author + 
                 '   - <small>' + obj.Date.toDateString() + '</small><br><i>' +
                 obj.Summary + '</i>';
 
