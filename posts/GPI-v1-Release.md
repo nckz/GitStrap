@@ -3,6 +3,7 @@ Title:  GPI v1 Release
 Date:   2016-01-13 13:56:00
 Author: Nicholas Zwart
 Header_Cover: /images/banner_v1.jpg
+Summary: The GPI version 1-beta is available for download!
 ---
 
 The GPI version 1-beta is available for download!  This version marks some

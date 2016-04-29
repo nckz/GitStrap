@@ -25,14 +25,14 @@ what shows up on the navigation tab.
 
     Example: >Home Contacts About
 
-Use the keyword 'BLOG' to place the link for a blog index.
+Use the keyword 'GSBLOG' to place the link for a blog index.
 
-    Example: >Home Contacts BLOG About 
+    Example: >Home Contacts GSBLOG About 
 
 This setup uses the following:
 
 ```
->Readme.md Config Header Footer Example BLOG
+>Readme.md Config Header Footer Example GSBLOG
 ```
 
 ## Theme
