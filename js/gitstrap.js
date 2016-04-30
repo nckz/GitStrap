@@ -113,8 +113,9 @@ function PostToHTML(relpath, markdown_body) {
 
         /* parse YAML header */
         var obj = jsyaml.loadFront(text)
-        post_head.innerHTML = '<b>'+obj.Title + '</b><br> ' + obj.Author + 
-            '   - <small>' + obj.Date.toDateString() + '</small><br><br>';
+        post_head.innerHTML = '<b>'+obj.Title + '</b><br> &nbsp; &nbsp; ' +
+            obj.Author + ' | <small>' + obj.Date.toDateString() +
+            '</small><br><br>';
 
         /* convert the unparsed content as markdown */
         var converter = new showdown.Converter();
@@ -351,9 +352,10 @@ function BlogIndex(conf) {
 
             /* write some HTML to format the data */
             var li = document.getElementById(markdown_div);
-            li.innerHTML = '<a href=?post='+markdown_div+'><b>'+obj.Title + '</b></a><br> ' + obj.Author + 
-                '   - <small>' + obj.Date.toDateString() + '</small><br><i>' +
-                obj.Summary + '</i>';
+            li.innerHTML = '<a href=?post='+markdown_div+'><b>'+obj.Title +
+                '</b><br></a> ' + obj.Author + ' | <small>' + 
+                obj.Date.toDateString() + '</small><br><i>' + obj.Summary +
+                '</i>';
 
         };
         getFile(relpath, callback);
