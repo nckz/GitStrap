@@ -74,16 +74,13 @@ This setup uses the following:
 ## Blog
 If a blog is desired, the post files (stored in `/posts/` directory) will be
 included in the same way as navigation items.  Include the desired blog entires
-by adding them to the list.  If a blog is not required, set the option to
-`false`.
-
-    Example: >false
-
-The blog index link is named by the first element in the post list:
+by adding them to the list.  If a blog is desired, make sure to set the
+`GSBLOG` keyword in the Nav item list above. The blog index link is named by
+the first element in the post list:
 
     Example: >Index post1 post2 post3 post4
 
-This setup uses the following:
+Where "Index" would be the blog index link name. This setup uses the following:
 ```
->Blog Using-The-Blog GitStrap-Dependencies The-Index-File
+>Blog Using-The-Blog GitStrap-Dependencies The-Index-File Using-GitStrap-With-GitLab
 ```
