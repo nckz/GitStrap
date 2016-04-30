@@ -85,5 +85,5 @@ The blog index link is named by the first element in the post list:
 
 This setup uses the following:
 ```
->Blog Using-The-Blog GitStrap-Dependencies
+>Blog Using-The-Blog GitStrap-Dependencies The-Index-File
 ```

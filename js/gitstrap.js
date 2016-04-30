@@ -20,6 +20,7 @@ var gs_main_title_id = 'main-title';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 
+
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async = true) {
