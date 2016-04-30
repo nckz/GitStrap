@@ -124,11 +124,23 @@ function PostToHTML(relpath, markdown_body) {
         body.appendChild(post_head);
         body.appendChild(post_body);
 
+        if (text == null) {
+            post_head.innerHTML = 'Unable to load text for: '+relpath;
+            return;
+        }
+
         /* parse YAML header */
         var obj = jsyaml.loadFront(text)
-        post_head.innerHTML = '<b>'+obj.Title + '</b><br> &nbsp; &nbsp; ' +
-            obj.Author + ' | <small>' + obj.Date.toDateString() +
-            '</small><br><br>';
+
+        /* check for post meta data */
+        var date = typeof obj.Date !== 'undefined' ?  obj.Date.toDateString() : '';
+        var author = typeof obj.Author !== 'undefined' ?  obj.Author : '';
+        var summary = typeof obj.Summary !== 'undefined' ?  obj.Summary : '';
+        var title = typeof obj.Title !== 'undefined' ?  obj.Title : '';
+
+        /* write some HTML to format the data */
+        post_head.innerHTML = '<b>'+title+'</b><br> &nbsp; &nbsp; '+author+
+                              ' | <small>'+date+'</small><br><br>';
 
         /* convert the unparsed content as markdown */
         var converter = new showdown.Converter();
@@ -359,14 +371,26 @@ function BlogIndex(conf) {
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
+            if (text == null) {
+                var li = document.getElementById(markdown_div);
+                li.innerHTML = 'Unable to load text for: '+relpath;
+                return;
+            }
+
             /* parse YAML header */
             var obj = jsyaml.loadFront(text)
 
+            /* check for post meta data */
+            var date = typeof obj.Date !== 'undefined' ?  obj.Date.toDateString() : '';
+            var author = typeof obj.Author !== 'undefined' ?  obj.Author : '';
+            var summary = typeof obj.Summary !== 'undefined' ?  obj.Summary : '';
+            var title = typeof obj.Title !== 'undefined' ?  obj.Title : '';
+
             /* write some HTML to format the data */
             var li = document.getElementById(markdown_div);
-            li.innerHTML = '<a href=?post='+markdown_div+'><b>'+obj.Title +
-                '</b><br></a> ' + obj.Author + ' | <small>' + 
-                obj.Date.toDateString() + '</small><br><i>' + obj.Summary +
+            li.innerHTML = '<a href=?post='+markdown_div+'><b>'+title+
+                '</b><br></a> ' + author + ' | <small>' + 
+                date + '</small><br><i>' + summary +
                 '</i>';
 
         };
