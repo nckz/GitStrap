@@ -1,8 +1,23 @@
+/* BootGitStrap.js 
+ * requires:
+ *  jQuery 1.12.0
+ *  Loads the index.html with the appropriate tags and downloads the required
+ *  javascript and css.
+ */
+
+/* GITSTRAP VERSION -------------------------------------------------------- */
+/* This will change the url string to point to the selected version of
+ * GitStrap. The version
+ */
+var gs_version = ''
+
+/* HEAD TAG ---------------------------------------------------------------- */
 var gs_html_head_tag = ' \
     <meta charset="utf-8"> \
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> \
     <meta name="viewport" content="width=device-width, initial-scale=1">';
 
+/* BODY TAG ---------------------------------------------------------------- */
 var gs_html_body_tag = ' \
  \
 <!-- GitHub ribbon --> \
@@ -41,6 +56,7 @@ var gs_html_body_tag = ' \
 <!-- GitStrip.js --> \
 <script src="js/gitstrap.js"></script> ';
 
+/* HELPER FUNCTIONS -------------------------------------------------------- */
 function loadAndExecuteScripts(aryScriptUrls, index, callback) {
     $.getScript(aryScriptUrls[index], function () {
         if(index + 1 <= aryScriptUrls.length - 1) {
@@ -58,6 +74,9 @@ function add_style(url){
     $('head').append(new_style);
 }
 
+/* MAIN -------------------------------------------------------------------- */
+/* Insert the html head and body tags, load the default bootstrap and gitstrap
+ * css then the javascripts. */
 window.onload = function() {
 
     document.head.innerHTML = gs_html_head_tag;
