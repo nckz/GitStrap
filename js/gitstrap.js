@@ -117,6 +117,10 @@ function MarkdownToHTML(relpath, markdown_div)
 function PostToHTML(relpath, markdown_body) {
     var callback = function (text) {
 
+        console.log(text);
+
+        var text = typeof text !== 'undefined' ?  text : null;
+
         /* write some HTML to format the data */
         var body = document.getElementById(markdown_body);
         var post_head = document.createElement('div');
@@ -124,7 +128,7 @@ function PostToHTML(relpath, markdown_body) {
         body.appendChild(post_head);
         body.appendChild(post_body);
 
-        if (text == null) {
+        if (text == null || text == '' || text == 'null') {
             post_head.innerHTML = 'Unable to load text for: '+relpath;
             return;
         }
@@ -371,7 +375,11 @@ function BlogIndex(conf) {
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
-            if (text == null) {
+            console.log(text);
+
+            var text = typeof text !== 'undefined' ?  text : null;
+
+            if (text == null || text == '' || text == 'null') {
                 var li = document.getElementById(markdown_div);
                 li.innerHTML = 'Unable to load text for: '+relpath;
                 return;
