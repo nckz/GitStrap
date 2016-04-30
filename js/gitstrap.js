@@ -10,6 +10,16 @@
 var gs_blog_keyword = 'GSBLOG';
 var gs_post_path = 'posts';
 
+/* object ids */
+var gs_error_id = 'gs_error_id';
+var gs_footer_id = 'gs_footer_id';
+var gs_header_id = 'gs_header_id';
+var gs_body_id = 'gs_body_id';
+var gs_ribbon_id = 'gs_ribbon_id';
+var gs_main_title_id = 'main-title';
+var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
+var gs_navbar_id = 'gs_navbar_id';
+
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async = true) {
@@ -21,7 +31,7 @@ function getFile(filename, callback, async = true) {
         if (req.status==200 && req.readyState==4) {
             callback(req.responseText);
         }else if(req.status==404){
-            fillDiv('ERROR: 404, File Not Found: "' + filename + '"', 'error_div');
+            fillDiv('ERROR: 404, File Not Found: "' + filename + '"', gs_error_id);
         }
     };
 
@@ -42,10 +52,10 @@ function appendAttribute(elem, name, value) {
 
 /* Change the title div and 'title' tag to user config.*/
 function setTitle(title) {
-    $('.main-title').html(title);
+    $('#'+gs_main_title_id).html(title);
 
     if (title == 'GitStrap') {
-        $('#github_ribbon').show()
+        $('#'+gs_ribbon_id).show()
     }
 } // - setTitle()
 
@@ -268,7 +278,7 @@ function Nav(conf) {
     var self = this;
 
     this.conf = conf;
-    this.navbar_obj = document.getElementById('nav-placeholder');
+    this.navbar_obj = document.getElementById(gs_nav_placeholder_id);
 
     /* The nav is a <ul> with items <li> and page links <a>. */
     this.genNavListTags = function() {
@@ -325,7 +335,7 @@ function BlogIndex(conf) {
     this.genBlogIndex = function() {
 
         /* write some HTML to format the data */
-        var md_body_obj = document.getElementById('markdown_body');
+        var md_body_obj = document.getElementById(gs_body_id);
         var ul = document.createElement('ul');
         appendAttribute(ul, 'class', 'list-group');
         md_body_obj.appendChild(ul);
@@ -336,7 +346,6 @@ function BlogIndex(conf) {
             li.setAttribute('id', item);
             appendAttribute(li, 'class', 'list-group-item');
             ul.appendChild(li);
-
 
             self.PostPreviewToHTML(gs_post_path+'/'+item, item);
         }
@@ -377,10 +386,10 @@ function gitstrap() {
 
     /* async GETs */
     if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
-        MarkdownToHTML(gsConfig.header, 'markdown_header');
+        MarkdownToHTML(gsConfig.header, gs_header_id);
     }
     if (gsConfig.footerIsActive()) {
-        MarkdownToHTML(gsConfig.footer, 'markdown_footer');
+        MarkdownToHTML(gsConfig.footer, gs_footer_id);
     }
 
     /* Fill the body content with either a blog-index, post or page. */
@@ -390,11 +399,11 @@ function gitstrap() {
         var gsBlogIndex = new BlogIndex(gsConfig);
     } else if (gsConfig.postIsActive()) {
         /* If a post was found in the url query. */
-        PostToHTML(gs_post_path+'/'+gsConfig.requested_page, 'markdown_body');
+        PostToHTML(gs_post_path+'/'+gsConfig.requested_page, gs_body_id);
     } else {
         /* The active page needs to correspond to a file at this point so 
          * that the getter can download it.  The getter should be post aware.*/
-        MarkdownToHTML(gsConfig.requested_page, 'markdown_body'); 
+        MarkdownToHTML(gsConfig.requested_page, gs_body_id); 
     }
 } // - gitstrap()
 
