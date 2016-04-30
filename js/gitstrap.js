@@ -23,7 +23,9 @@ var gs_navbar_id = 'gs_navbar_id';
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
-function getFile(filename, callback, async = true) {
+function getFile(filename, callback, async) {
+
+    var async = typeof async !== 'undefined' ?  async : true;
 
     /* If the config file can be downloaded send its text to the callback.
         */
