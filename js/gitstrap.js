@@ -375,7 +375,7 @@ function BlogIndex(conf) {
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
-            console.log(text);
+            console.log(typeof text);
 
             var text = typeof text !== 'undefined' ?  text : null;
 
