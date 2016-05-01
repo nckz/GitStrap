@@ -117,9 +117,9 @@ function MarkdownToHTML(relpath, markdown_div)
 function PostToHTML(relpath, markdown_body) {
     var callback = function (text) {
 
-        console.log(text);
-
-        var text = typeof text !== 'undefined' ?  text : null;
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
 
         /* write some HTML to format the data */
         var body = document.getElementById(markdown_body);
@@ -128,7 +128,7 @@ function PostToHTML(relpath, markdown_body) {
         body.appendChild(post_head);
         body.appendChild(post_body);
 
-        if (text == null || text == '' || text == 'null') {
+        if (isBlank(text)) {
             post_head.innerHTML = 'Unable to load text for: '+relpath;
             return;
         }
