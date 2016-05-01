@@ -1,9 +1,7 @@
----
 Title: GitStrap Dependencies
 Date: 2016-04-29 17:19:00
 Author: Nicholas Zwart
 Summary: GitStrap is built on...
----
 
 GitStrap is built on:
 
