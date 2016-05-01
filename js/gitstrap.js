@@ -375,11 +375,11 @@ function BlogIndex(conf) {
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
-            console.log(typeof text);
+            function isBlank(str) {
+                return (!str || /^\s*$/.test(str));
+            }
 
-            var text = typeof text !== 'undefined' ?  text : null;
-
-            if (text == null || text == '' || text == 'null') {
+            if (isBlank(text)) {
                 var li = document.getElementById(markdown_div);
                 li.innerHTML = 'Unable to load text for: '+relpath;
                 return;
