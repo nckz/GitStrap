@@ -119,6 +119,9 @@ function MarkdownToHTML(relpath, markdown_div)
 function PostToHTML(relpath, markdown_body) {
     var callback = function (text) {
 
+        text = text.replace("(((",'---');
+        text = text.replace(")))",'---');
+
         console.log(text);
 
         function isBlank(str) {
@@ -378,6 +381,9 @@ function BlogIndex(conf) {
      * post to given div-id. */
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
+
+            text = text.replace("(((",'---');
+            text = text.replace(")))",'---');
 
             console.log(text);
 
