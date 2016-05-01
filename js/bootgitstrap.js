@@ -79,6 +79,10 @@ function add_style(url){
  * css then the javascripts. */
 window.onload = function() {
 
+    if (document.head == null) {
+        alert("You must update your browser to view this website.");
+    }
+
     document.head.innerHTML = gs_html_head_tag;
     document.body.innerHTML = gs_html_body_tag;
 
