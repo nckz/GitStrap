@@ -34,7 +34,9 @@ function getFile(filename, callback, async) {
         if (req.status==200 && req.readyState==4) {
             callback(req.responseText);
         }else if(req.status==404){
-            fillDiv('ERROR: 404, File Not Found: "' + filename + '"', gs_error_id);
+            var err_txt = 'ERROR: 404, File Not Found: "' + filename + '"';
+            fillDiv(err_txt, gs_error_id);
+            console.log(err_txt);
         }
     };
 
@@ -116,6 +118,8 @@ function MarkdownToHTML(relpath, markdown_div)
  * post to given div-id. */
 function PostToHTML(relpath, markdown_body) {
     var callback = function (text) {
+
+        console.log(text);
 
         function isBlank(str) {
             return (!str || /^\s*$/.test(str));
@@ -374,6 +378,8 @@ function BlogIndex(conf) {
      * post to given div-id. */
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
+
+            console.log(text);
 
             function isBlank(str) {
                 return (!str || /^\s*$/.test(str));
