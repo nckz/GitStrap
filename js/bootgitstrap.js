@@ -1,6 +1,4 @@
 /* BootGitStrap.js 
- * requires:
- *  jQuery 1.12.0
  *  Loads the index.html with the appropriate tags and downloads the required
  *  javascript and css.
  */
@@ -15,7 +13,9 @@ var gs_version = ''
 var gs_html_head_tag = ' \
     <meta charset="utf-8"> \
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> \
-    <meta name="viewport" content="width=device-width, initial-scale=1">';
+    <meta name="viewport" content="width=device-width, initial-scale=1"> \
+    <!-- Default Bootstrap CSS --> \
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">';
 
 /* BODY TAG ---------------------------------------------------------------- */
 var gs_html_body_tag = ' \
@@ -57,8 +57,23 @@ var gs_html_body_tag = ' \
 <script src="js/gitstrap.js"></script> ';
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
+function getScript(url, callback) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    // most browsers
+    script.onload = callback;
+    // IE 6 & 7
+    script.onreadystatechange = function() {
+        if (this.readyState == 'complete') {
+            callback();
+        }
+    }
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
 function loadAndExecuteScripts(aryScriptUrls, index, callback) {
-    $.getScript(aryScriptUrls[index], function () {
+    getScript(aryScriptUrls[index], function () {
         if(index + 1 <= aryScriptUrls.length - 1) {
             loadAndExecuteScripts(aryScriptUrls, index + 1, callback);
         } else {
@@ -68,29 +83,20 @@ function loadAndExecuteScripts(aryScriptUrls, index, callback) {
     });
 }
 
-function add_style(url){
-    new_style = '<link rel="stylesheet" href="' + url +
-        '" type="text/css" media="screen" />';
-    $('head').append(new_style);
-}
-
 /* MAIN -------------------------------------------------------------------- */
 /* Insert the html head and body tags, load the default bootstrap and gitstrap
  * css then the javascripts. */
 window.onload = function() {
 
-    if (document.head == null) {
+    if (document.head == null) { // IE 8
         alert("You must update your browser to view this website.");
     }
 
     document.head.innerHTML = gs_html_head_tag;
     document.body.innerHTML = gs_html_body_tag;
 
-    /* css */
-    add_style("http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
-    add_style("css/gitstrap.css");
-
     /* js */
+    var jquery = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
     var bootstrap = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
     var showdown  = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
     //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
@@ -99,6 +105,6 @@ window.onload = function() {
     var gitstrap  = "js/gitstrap.js";
 
     /* load js synchronously */
-    var scripts = [bootstrap, showdown, jsyaml, gitstrap];
+    var scripts = [jquery, bootstrap, showdown, jsyaml, gitstrap];
     loadAndExecuteScripts(scripts, 0, function () {} );
 }

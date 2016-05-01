@@ -92,6 +92,9 @@ function setTheme(theme) {
             '" type="text/css" media="screen" />';
         $('head').append(new_style);
     }
+
+    /* css */
+    add_style("css/gitstrap.css");
     add_style(theme_url);
 }
 
