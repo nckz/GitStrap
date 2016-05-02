@@ -1,6 +1,5 @@
 /* BootGitStrap.js 
- *  Loads the index.html with the appropriate tags and downloads the required
- *  javascript and css.
+ *  Starts GitStrap on document ready and attaches actions to the nav buttons. 
  *
  * requires:
  *  jQuery 1.12.0
