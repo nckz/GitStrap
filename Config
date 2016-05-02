@@ -82,7 +82,8 @@ the first element in the post list:
 
     Example: >Index post1 post2 post3 post4
 
-Where "Index" would be the blog index link name. This setup uses the following:
+Where "Index" would be the blog index link name. This setup uses the following
+(where "More" is the blog link and each blog file is listed on a new line):
 ```
 >More 
 Using-The-Blog 
