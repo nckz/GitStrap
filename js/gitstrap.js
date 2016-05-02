@@ -21,12 +21,13 @@ var gs_jsyaml_url = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d76
 var gs_jsyaml_map_url = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
 
 /* development url */
-var gs_bootgitstrap_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js";
-//var gs_bootgitstrap_url = "js/bootgitstrap.js"; /* local copy */
+//var gs_bootgitstrap_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js"; /* CDN */
+var gs_bootgitstrap_url = "js/bootgitstrap.js"; /* local copy */
 
-var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
-//var gs_css_url = "css/gitstrap.css" /* local copy */
+/* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
+//var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
+var gs_css_url = "css/gitstrap.css" /* local copy */
 
 /* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
