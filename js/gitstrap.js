@@ -7,9 +7,6 @@
  */
 
 /* GLOBAL ------------------------------------------------------------------ */
-/* scripts and css */
-
-/* DEV */
 
 /* js */
 var gs_jquery_url = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
@@ -18,14 +15,8 @@ var gs_showdown_url = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/sho
 var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js"
 var gs_jsyaml_map_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js.map"
 
-/* development url */
-//var gs_bootgitstrap_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js"; /* CDN */
-var gs_bootgitstrap_url = "js/bootgitstrap.min.js"; /* local copy */
-
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
-//var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
-var gs_css_url = "css/gitstrap.css" /* local copy */
 
 /* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
@@ -42,7 +33,7 @@ var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 
-/* get the config asap */
+/* get the server config asap */
 var gsConfig = new Config('Config');
 
 /* GITSTRAP VERSION -------------------------------------------------------- */
@@ -94,6 +85,22 @@ var gs_html_body_tag = ' \
     </footer> \
 </div> <!-- /container -->';
 
+/* STYLE TAG --------------------------------------------------------------- */
+var gs_html_style_tag = ' \
+/* markdown extras - Use these "fitw<%>" attributes for the alt text to scale an image */ \
+img[alt=fitwidth] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto } \
+img[alt=fitw100] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw75] { width: 75%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw50] { width: 50%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw25] { width: 25%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto} \
+ \
+/* make an "active" tab */ \
+.non-active-nav { \
+    -webkit-filter: opacity(75%); /* Chrome, Safari, Opera */ \
+    filter: opacity(75%); \
+} ';
+
 /* LOAD HTML --------------------------------------------------------------- */
 /* Insert the html head and body tags, load the default bootstrap and gitstrap
  * css then the javascripts. */
@@ -111,11 +118,11 @@ window.onload = function() {
     /* make sure these show up before more expensive processes happen */
     setTitle(gsConfig.title);
     setTheme(gsConfig.theme);
-    add_style(gs_css_url);
+    add_style_tag(gs_html_style_tag);
 
     /* load js synchronously */
-    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url, gs_bootgitstrap_url];
-    loadAndExecuteScripts(scripts, 0, function () {} );
+    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
+    loadAndExecuteScripts(scripts, 0, gs_jq_start);
 }
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
@@ -130,6 +137,20 @@ function add_style(url) {
     link.type = 'text/css';
     link.href = url;
     head.appendChild(link);
+}
+
+function add_style_tag(csstext) {
+    var head  = document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (style.styleSheet) {
+        style.stylesheet = csstext;
+    } else {
+        style.appendChild(document.createTextNode(csstext));
+    }
+
+    head.appendChild(style);
 }
 
 function getScript(url, callback) {
@@ -573,3 +594,20 @@ function gitstrap() {
         MarkdownToHTML(gsConfig.requested_page, gs_body_id); 
     }
 } // - gitstrap()
+
+/* jQuery ------------------------------------------------------------------ */
+/* Wait for jquery to load before running these: */
+function gs_jq_start () {
+
+    if (window.jQuery) {
+
+        /* Link tab actions. */
+        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+            var href = $(e.target).attr('href');
+            window.location.assign(href);
+        })
+
+        /* start gitstrap processing */
+        $(document).ready(gitstrap);
+    }
+}
