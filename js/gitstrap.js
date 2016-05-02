@@ -15,6 +15,9 @@ var gs_showdown_url = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/sho
 var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js"
 var gs_jsyaml_map_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js.map"
 
+/* load js deps */
+loadDependencies();
+
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
 
@@ -32,9 +35,6 @@ var gs_nav_title_id = 'gs_nav_title_id';
 var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
-
-/* get the server config asap */
-var gsConfig = new Config('Config');
 
 /* GITSTRAP VERSION -------------------------------------------------------- */
 /* This will change the url string to point to the selected version of
@@ -101,31 +101,16 @@ img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; 
     filter: opacity(75%); \
 } ';
 
-/* LOAD HTML --------------------------------------------------------------- */
-/* Insert the html head and body tags, load the default bootstrap and gitstrap
- * css then the javascripts. */
-window.onload = function() {
-
-
-    if (document.head == null) { // IE 8
-        alert("You must update your browser to view this website.");
+/* HELPER FUNCTIONS -------------------------------------------------------- */
+function forceLoad (js_name, url) {
+    if (! window[js_name]) {
+        var js = document.createElement('script');
+        js.type = 'text/javascript';
+        js.src = url;
+        document.getElementsByTagName('head')[0].appendChild(js);
     }
-
-    document.head.innerHTML = gs_html_head_tag;
-    document.body.innerHTML = gs_html_body_tag;
-
-    /* load css afap */
-    /* make sure these show up before more expensive processes happen */
-    setTitle(gsConfig.title);
-    setTheme(gsConfig.theme);
-    add_style_tag(gs_html_style_tag);
-
-    /* load js synchronously */
-    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
-    loadAndExecuteScripts(scripts, 0, gs_jq_start);
 }
 
-/* HELPER FUNCTIONS -------------------------------------------------------- */
 function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
@@ -177,6 +162,12 @@ function loadAndExecuteScripts(aryScriptUrls, index, callback) {
                 callback();
         }
     });
+}
+
+function loadDependencies() {
+    /* load js synchronously */
+    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
+    loadAndExecuteScripts(scripts, 0, gs_jq_start);
 }
 
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
@@ -332,16 +323,16 @@ function Config(filename) {
 
     this.parseFile = function (text) {
 
-        /* Split config file into options. */
+        /* Split the config file into options using the DOM. */
         var options = [];
-        var words = text.split('\n');
-        for (var i = 0; i < words.length; i++) {
-            /* ignore '#' and blank lines */
-            if(! (words[i].match(/^#/) || (! words[i]))) {
-                /* options are only on lines that start with blockquotes '>' */
-                if( words[i].match(/^>\S+/) ) {
-                    options.push(words[i].replace(/^>/, ''));
-                }
+        var converter = new showdown.Converter();
+        var dummy = document.createElement('html');
+        dummy.innerHTML = converter.makeHtml(text);
+        code = dummy.getElementsByTagName('code');
+        for( i=0; i<code.length;i++) {
+            if (code[i].innerHTML.match(/^&gt;\S+/)) {
+                /* remove '>' and new-line/line-breaks */
+                options.push(code[i].innerHTML.replace(/^&gt;/, '').replace(/\r?\n|\r/g,''));
             }
         }
 
@@ -353,11 +344,11 @@ function Config(filename) {
          * line 5: blog filenames
          */
         self.title = options[0];
-        self.nav_items = options[1].split(' '); 
+        self.nav_items = options[1].split(/\s*[\s,]\s*/); // split on whitespace
         self.theme = options[2];
         self.header = options[3];
         self.footer = options[4];
-        self.blog_items = options[5].split(' ');
+        self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -567,7 +558,23 @@ function BlogIndex(conf) {
 }
 
 /* MAIN -------------------------------------------------------------------- */
-function gitstrap() {
+function renderPage() {
+
+    /* get the server config asap */
+    var gsConfig = new Config('Config');
+
+    if (document.head == null) { // IE 8
+        alert("You must update your browser to view this website.");
+    }
+
+    document.head.innerHTML = gs_html_head_tag;
+    document.body.innerHTML = gs_html_body_tag;
+
+    /* load css afap */
+    /* make sure these show up before more expensive processes happen */
+    setTitle(gsConfig.title);
+    setTheme(gsConfig.theme);
+    add_style_tag(gs_html_style_tag);
 
     /* fill in the navbar */
     var gsNav = new Nav(gsConfig);
@@ -608,6 +615,6 @@ function gs_jq_start () {
         })
 
         /* start gitstrap processing */
-        $(document).ready(gitstrap);
+        $(document).ready(renderPage);
     }
 }

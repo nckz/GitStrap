@@ -1,7 +1,9 @@
 # GitStrap page configuration file.
-This configuration file `Config` is used for this demo. Its written in Markdown
-and parses the blockquotes (lines beginning with '`>`') for actual
-configuration options.
+This configuration file `Config` is used to setup this demo site. It is written
+in Markdown and is parsed for options starting with the '`>`' character and
+wrapped in a code block '<code>```</code>' for actual configuration options
+([see the actual file for how this
+looks](https://github.com/nckz/GitStrap/blob/gh-pages/Config)).
 
 ## Site Title
 This title will show up on the left side of the navigation bar and on the
@@ -82,5 +84,9 @@ the first element in the post list:
 
 Where "Index" would be the blog index link name. This setup uses the following:
 ```
->More Using-The-Blog GitStrap-Dependencies The-Index-File Using-GitStrap-With-GitLab
+>More 
+Using-The-Blog 
+GitStrap-Dependencies 
+The-Index-File 
+Using-GitStrap-With-GitLab
 ```
