@@ -10,6 +10,20 @@
 /* scripts and css */
 
 /* DEV */
+
+/* js */
+var gs_jquery_url = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
+var gs_bootstrap_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
+var gs_showdown_url = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
+
+/* served from a specific github commit */
+var gs_jsyaml_url = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js"
+var gs_jsyaml_map_url = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
+
+/* development url */
+var gs_bootgitstrap_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js";
+//var gs_bootgitstrap_url = "js/bootgitstrap.js"; /* local copy */
+
 var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
 //var gs_css_url = "css/gitstrap.css" /* local copy */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
@@ -76,9 +90,7 @@ var gs_html_body_tag = ' \
     <hr> \
     <footer class="footer text-center" id="gs_footer_id" style="display: none;"> \
     </footer> \
-</div> <!-- /container --> \
-<!-- GitStrip.js --> \
-<script src="js/gitstrap.js"></script> ';
+</div> <!-- /container -->';
 
 /* LOAD HTML --------------------------------------------------------------- */
 /* Insert the html head and body tags, load the default bootstrap and gitstrap
@@ -96,22 +108,8 @@ window.onload = function() {
     add_style(gs_default_theme_url);
     add_style(gs_css_url);
 
-    /* js */
-    var jquery = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
-    var bootstrap = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
-    var showdown  = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
-
-    /* served from a specific github commit */
-    var jsyaml    = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js"
-    var jsyaml_map = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
-    //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
-  
-    /* development url */
-    var bootgitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js";
-    //var bootgitstrap  = "js/bootgitstrap.js"; /* local copy */
-
     /* load js synchronously */
-    var scripts = [jquery, bootstrap, showdown, jsyaml, bootgitstrap];
+    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url, gs_bootgitstrap_url];
     loadAndExecuteScripts(scripts, 0, function () {} );
 }
 
