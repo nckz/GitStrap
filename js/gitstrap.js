@@ -10,8 +10,9 @@
 /* scripts and css */
 
 /* DEV */
-gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
-//gs_css_url = "css/gitstrap.css" /* local copy */
+//var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
+var gs_css_url = "css/gitstrap.css" /* local copy */
+add_style(gs_css_url); // from bootgitstrap.js
 
 /* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
@@ -23,7 +24,8 @@ var gs_footer_id = 'gs_footer_id';
 var gs_header_id = 'gs_header_id';
 var gs_body_id = 'gs_body_id';
 var gs_ribbon_id = 'gs_ribbon_id';
-var gs_main_title_id = 'main-title';
+var gs_nav_title_id = 'gs_nav_title_id';
+var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 
@@ -63,10 +65,11 @@ function appendAttribute(elem, name, value) {
 
 /* Change the title div and 'title' tag to user config.*/
 function setTitle(title) {
-    $('#'+gs_main_title_id).html(title);
+    document.getElementById(gs_title_id).innerHTML = title;
+    document.getElementById(gs_nav_title_id).innerHTML = title;
 
     if (title == 'GitStrap') {
-        $('#'+gs_ribbon_id).show()
+        document.getElementById(gs_ribbon_id).style.display = 'block';
     }
 } // - setTitle()
 
@@ -93,14 +96,7 @@ function setTheme(theme) {
         theme_url = name_url;
     }
     
-    function add_style(url){
-        new_style = '<link rel="stylesheet" href="' + url +
-            '" type="text/css" media="screen" />';
-        $('head').append(new_style);
-    }
-
     /* css */
-    add_style(gs_css_url);
     add_style(theme_url);
 }
 

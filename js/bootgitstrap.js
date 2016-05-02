@@ -9,13 +9,22 @@
  */
 var gs_version = ''
 
+var gs_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
+
+function add_style(url) {
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = url;
+    head.appendChild(link);
+}
+
 /* HEAD TAG ---------------------------------------------------------------- */
 var gs_html_head_tag = ' \
     <meta charset="utf-8"> \
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> \
-    <meta name="viewport" content="width=device-width, initial-scale=1"> \
-    <!-- Default Bootstrap CSS --> \
-    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">';
+    <meta name="viewport" content="width=device-width, initial-scale=1">';
 
 /* BODY TAG ---------------------------------------------------------------- */
 var gs_html_body_tag = ' \
@@ -23,7 +32,7 @@ var gs_html_body_tag = ' \
 <!-- GitHub ribbon --> \
 <a href="https://github.com/nckz/GitStrap"><img style="display: none; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" id="gs_ribbon_id"></a> \
  \
-<title id="gs_main_title_id">GitStrap</title> \
+<title id="gs_title_id">GitStrap</title> \
  \
 <div class="container"> <!-- all page content --> \
     <!-- Navigation --> \
@@ -35,7 +44,7 @@ var gs_html_body_tag = ' \
                     data-target="#gs_navbar_id"> \
                     &#9776; \
                 </button> \
-                <h2 class="text-muted" id="gs_main_title_id">GitStrap</h2> \
+                <h2 class="text-muted" id="gs_nav_title_id">GitStrap</h2> \
             </div><!-- navbar-header --> \
             <div class="collapse navbar-collapse navbar-right" id="gs_navbar_id"> \
                 <ul class="nav navbar-nav" id="gs_nav_placeholder_id"></ul> \
@@ -93,6 +102,7 @@ window.onload = function() {
     }
 
     document.head.innerHTML = gs_html_head_tag;
+    add_style(gs_theme_url);
     document.body.innerHTML = gs_html_body_tag;
 
     /* js */
@@ -106,8 +116,8 @@ window.onload = function() {
     //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
   
     /* development url */
-    var gitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/gitstrap.min.js";
-    //var gitstrap  = "js/gitstrap.js"; /* local copy */
+    //var gitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/gitstrap.min.js";
+    var gitstrap  = "js/gitstrap.js"; /* local copy */
 
     /* load js synchronously */
     var scripts = [jquery, bootstrap, showdown, jsyaml, gitstrap];
