@@ -99,10 +99,15 @@ window.onload = function() {
     var jquery = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
     var bootstrap = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
     var showdown  = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
-    //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
+
+    /* served from a specific github commit */
     var jsyaml    = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js"
     var jsyaml_map = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
-    var gitstrap  = "js/gitstrap.js";
+    //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
+  
+    /* development url */
+    var gitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/gitstrap.min.js";
+    //var gitstrap  = "js/gitstrap.js"; /* local copy */
 
     /* load js synchronously */
     var scripts = [jquery, bootstrap, showdown, jsyaml, gitstrap];

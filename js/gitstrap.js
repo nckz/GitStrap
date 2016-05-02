@@ -7,6 +7,13 @@
  */
 
 /* GLOBAL ------------------------------------------------------------------ */
+/* scripts and css */
+
+/* DEV */
+gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
+//gs_css_url = "css/gitstrap.css" /* local copy */
+
+/* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
 var gs_post_path = 'posts';
 
@@ -19,7 +26,6 @@ var gs_ribbon_id = 'gs_ribbon_id';
 var gs_main_title_id = 'main-title';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
-
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
@@ -94,7 +100,7 @@ function setTheme(theme) {
     }
 
     /* css */
-    add_style("css/gitstrap.css");
+    add_style(gs_css_url);
     add_style(theme_url);
 }
 
