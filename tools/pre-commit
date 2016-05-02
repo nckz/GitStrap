@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "minify"
+BASE=`git rev-parse --show-toplevel`
+cd ${BASE}/js
+
+rm gitstrap.min.js
+jsmin <gitstrap.js> gitstrap.min.js
+
+cd ${BASE}
+git add ${BASE}/js/*.min.js
+
+exit 0
