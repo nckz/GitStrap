@@ -22,7 +22,7 @@ var gs_jsyaml_map_url = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f
 
 /* development url */
 //var gs_bootgitstrap_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js"; /* CDN */
-var gs_bootgitstrap_url = "js/bootgitstrap.js"; /* local copy */
+var gs_bootgitstrap_url = "js/bootgitstrap.min.js"; /* local copy */
 
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
@@ -115,6 +115,10 @@ window.onload = function() {
 }
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
+
 function add_style(url) {
     var head  = document.getElementsByTagName('head')[0];
     var link  = document.createElement('link');
@@ -244,14 +248,9 @@ function MarkdownToHTML(relpath, markdown_div)
 function PostToHTML(relpath, markdown_body) {
     var callback = function (text) {
 
+        /* circumvent github's auto-meta parsing */
         text = text.replace("(((",'---');
         text = text.replace(")))",'---');
-
-        console.log(text);
-
-        function isBlank(str) {
-            return (!str || /^\s*$/.test(str));
-        }
 
         /* write some HTML to format the data */
         var body = document.getElementById(markdown_body);
@@ -260,7 +259,7 @@ function PostToHTML(relpath, markdown_body) {
         body.appendChild(post_head);
         body.appendChild(post_body);
 
-        if (isBlank(text)) {
+        if ((isBlank(text)) || (text == null) || (text == 'null') || (typeof text === 'undefined')) {
             post_head.innerHTML = 'Unable to load text for: '+relpath;
             return;
         }
@@ -507,16 +506,11 @@ function BlogIndex(conf) {
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
+            /* circumvent github's auto-meta parsing */
             text = text.replace("(((",'---');
             text = text.replace(")))",'---');
 
-            console.log(text);
-
-            function isBlank(str) {
-                return (!str || /^\s*$/.test(str));
-            }
-
-            if (isBlank(text)) {
+            if ((isBlank(text)) || (text == null) || (text == 'null') || (typeof text === 'undefined')) {
                 var li = document.getElementById(markdown_div);
                 li.innerHTML = 'Unable to load text for: '+relpath;
                 return;
