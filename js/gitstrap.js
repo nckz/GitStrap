@@ -42,6 +42,9 @@ var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 
+/* get the config asap */
+var gsConfig = new Config('Config');
+
 /* GITSTRAP VERSION -------------------------------------------------------- */
 /* This will change the url string to point to the selected version of
  * GitStrap. The version
@@ -96,6 +99,7 @@ var gs_html_body_tag = ' \
  * css then the javascripts. */
 window.onload = function() {
 
+
     if (document.head == null) { // IE 8
         alert("You must update your browser to view this website.");
     }
@@ -104,7 +108,9 @@ window.onload = function() {
     document.body.innerHTML = gs_html_body_tag;
 
     /* load css afap */
-    add_style(gs_default_theme_url);
+    /* make sure these show up before more expensive processes happen */
+    setTitle(gsConfig.title);
+    setTheme(gsConfig.theme);
     add_style(gs_css_url);
 
     /* load js synchronously */
@@ -203,7 +209,7 @@ function setTheme(theme) {
     var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' +
         theme + '/bootstrap.min.css';
 
-    /* who knows if this actually validates a url? */
+    /* check if this looks like a url */
     var theme_url = '';
     function valid_url(url){
         return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
@@ -216,6 +222,8 @@ function setTheme(theme) {
     /* see if the user specified a bootswatch name */
     else if (valid_url(name_url)) {
         theme_url = name_url;
+    }else{
+        theme_url = gs_default_theme_url;
     }
     
     /* css */
@@ -539,11 +547,6 @@ function BlogIndex(conf) {
 
 /* MAIN -------------------------------------------------------------------- */
 function gitstrap() {
-    var gsConfig = new Config('Config');
-
-    /* make sure these show up before more expensive processes happen */
-    setTitle(gsConfig.title);
-    setTheme(gsConfig.theme);
 
     /* fill in the navbar */
     var gsNav = new Nav(gsConfig);
