@@ -10,9 +10,9 @@
 /* scripts and css */
 
 /* DEV */
-//var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
-var gs_css_url = "css/gitstrap.css" /* local copy */
-add_style(gs_css_url); // from bootgitstrap.js
+var gs_css_url = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/css/gitstrap.css" /* CDN */
+//var gs_css_url = "css/gitstrap.css" /* local copy */
+var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
 
 /* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
@@ -34,17 +34,6 @@ var gs_navbar_id = 'gs_navbar_id';
  * GitStrap. The version
  */
 var gs_version = ''
-
-var gs_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
-
-function add_style(url) {
-    var head  = document.getElementsByTagName('head')[0];
-    var link  = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.type = 'text/css';
-    link.href = url;
-    head.appendChild(link);
-}
 
 /* HEAD TAG ---------------------------------------------------------------- */
 var gs_html_head_tag = ' \
@@ -91,7 +80,51 @@ var gs_html_body_tag = ' \
 <!-- GitStrip.js --> \
 <script src="js/gitstrap.js"></script> ';
 
+/* LOAD HTML --------------------------------------------------------------- */
+/* Insert the html head and body tags, load the default bootstrap and gitstrap
+ * css then the javascripts. */
+window.onload = function() {
+
+    if (document.head == null) { // IE 8
+        alert("You must update your browser to view this website.");
+    }
+
+    document.head.innerHTML = gs_html_head_tag;
+    document.body.innerHTML = gs_html_body_tag;
+
+    /* load css afap */
+    add_style(gs_default_theme_url);
+    add_style(gs_css_url);
+
+    /* js */
+    var jquery = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
+    var bootstrap = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
+    var showdown  = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
+
+    /* served from a specific github commit */
+    var jsyaml    = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js"
+    var jsyaml_map = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
+    //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
+  
+    /* development url */
+    var bootgitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/bootgitstrap.min.js";
+    //var bootgitstrap  = "js/bootgitstrap.js"; /* local copy */
+
+    /* load js synchronously */
+    var scripts = [jquery, bootstrap, showdown, jsyaml, bootgitstrap];
+    loadAndExecuteScripts(scripts, 0, function () {} );
+}
+
 /* HELPER FUNCTIONS -------------------------------------------------------- */
+function add_style(url) {
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = url;
+    head.appendChild(link);
+}
+
 function getScript(url, callback) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
@@ -118,39 +151,6 @@ function loadAndExecuteScripts(aryScriptUrls, index, callback) {
     });
 }
 
-/* MAIN -------------------------------------------------------------------- */
-/* Insert the html head and body tags, load the default bootstrap and gitstrap
- * css then the javascripts. */
-window.onload = function() {
-
-    if (document.head == null) { // IE 8
-        alert("You must update your browser to view this website.");
-    }
-
-    document.head.innerHTML = gs_html_head_tag;
-    add_style(gs_theme_url);
-    document.body.innerHTML = gs_html_body_tag;
-
-    /* js */
-    var jquery = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
-    var bootstrap = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
-    var showdown  = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
-
-    /* served from a specific github commit */
-    var jsyaml    = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js"
-    var jsyaml_map = "https://cdn.rawgit.com/nckz/GitStrap/fa12906d40aac6596f8d7601fddf7b21dc9b47a3/js/js-yaml-front-client.min.js.map"
-    //var jsyaml    = "js/js-yaml-front-client.min.js"; /* local copy */
-  
-    /* development url */
-    //var gitstrap = "https://cdn.rawgit.com/nckz/GitStrap/gh-pages/js/gitstrap.min.js";
-    var gitstrap  = "js/bootgitstrap.js"; /* local copy */
-
-    /* load js synchronously */
-    var scripts = [jquery, bootstrap, showdown, jsyaml, gitstrap];
-    loadAndExecuteScripts(scripts, 0, function () {} );
-}
-
-/* HELPER FUNCTIONS -------------------------------------------------------- */
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async) {
 
