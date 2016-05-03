@@ -25,6 +25,7 @@ loadDependencies();
 
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
+var gs_googleprettify_css_url = "https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/src/prettify.css";
 
 /* configurable elements */
 var gs_blog_keyword = 'GSBLOG';
@@ -254,7 +255,7 @@ function setCodeTheme(theme) {
     else if (valid_url(name_url)) {
         theme_url = name_url;
     }else{
-        theme_url = gs_default_theme_url;
+        theme_url = gs_googleprettify_css_url;
     }
     
     /* css */
