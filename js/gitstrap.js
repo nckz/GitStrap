@@ -3,7 +3,10 @@
  *  jQuery 1.12.0
  *  bootstrap 3.3.6
  *  showdown 1.3.0
+ *  showdown/prettify-extension 1.3.0
  *  js-yaml-front-client 3.4.0
+ *  google/code-prettify 9c373
+ *  jmblog/color-themes-for-google-code-prettify be5aa
  */
 
 /* GLOBAL ------------------------------------------------------------------ */
@@ -12,9 +15,10 @@
 var gs_jquery_url = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
 var gs_bootstrap_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
 var gs_showdown_url = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
+var gs_showdown_prettify_url = "https://cdn.rawgit.com/showdownjs/prettify-extension/1.3.0/dist/showdown-prettify.min.js";
 var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js";
-var gs_jsyaml_map_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js.map";
-var gs_scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
+var gs_googleprettify_url = "https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/src/prettify.js";
+var gs_scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url, gs_showdown_prettify_url, gs_googleprettify_url];
 
 /* load js deps */
 loadDependencies();
@@ -214,6 +218,50 @@ function setTitle(title) {
 } // - setTitle()
 
 /* Get the theme loaded first to ensure css is setup before. */
+function setCodeTheme(theme) {
+
+    /* determine where the theme is from */
+    var who = 'jmblog';
+    switch(theme) {
+        case 'desert':
+        case 'doxy':
+        case 'sons-of-obsidian':
+        case 'sunburst':
+            who = 'google';
+        break;
+    }
+
+    /* check for theme name or url */
+    var direct_url = theme;
+    var name_url = '';
+    if (who == 'google') {
+        name_url = 'https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/styles/' + theme + '.css';
+    } else {
+        name_url = 'https://cdn.rawgit.com/jmblog/color-themes-for-google-code-prettify/be5aa6fee61ad73f5a34ffb65099c8d1b3917602/dist/themes/' + theme + '.min.css';
+    }
+
+    /* check if this looks like a url */
+    var theme_url = '';
+    function valid_url(url){
+        return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
+    }
+
+    /* see if the user specifies the full url */
+    if (valid_url(direct_url)) {
+        theme_url = direct_url;
+    }
+    /* see if the user specified a bootswatch name */
+    else if (valid_url(name_url)) {
+        theme_url = name_url;
+    }else{
+        theme_url = gs_default_theme_url;
+    }
+    
+    /* css */
+    add_style(theme_url);
+}
+
+/* Get the theme loaded first to ensure css is setup before. */
 function setTheme(theme) {
 
     /* check for theme name or url */
@@ -254,7 +302,8 @@ function Showdown(text) {
     showdown_options = {
         parseImgDimensions: true,
         ghCodeBlocks: true,
-        tables: true
+        tables: true,
+        extensions: ['prettify']
     }
     var converter = new showdown.Converter(showdown_options);
     console.log(converter);
@@ -268,8 +317,9 @@ function MarkdownToHTML(relpath, markdown_div)
         html = Showdown(text);
         console.log(html);
         fillDiv(html, markdown_div);
+        $('.linenums').removeClass('linenums');
+        prettyPrint();
     };
-
     getFile(relpath, callback);
 }
 
@@ -309,7 +359,8 @@ function PostToHTML(relpath, markdown_body) {
 
         /* convert the unparsed content as markdown */
         post_body.innerHTML = Showdown(obj.__content);
-
+        $('.linenums').removeClass('linenums');
+        prettyPrint();
     };
     getFile(relpath, callback);
 }
@@ -360,6 +411,7 @@ function Config(filename) {
         self.header = options[3];
         self.footer = options[4];
         self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
+        self.code_theme = options[6];
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -586,6 +638,7 @@ function renderPage() {
     setTitle(gsConfig.title);
     setTheme(gsConfig.theme);
     add_style_tag(gs_html_style_tag);
+    setCodeTheme(gsConfig.code_theme);
 
     /* fill in the navbar */
     var gsNav = new Nav(gsConfig);

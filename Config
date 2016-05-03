@@ -91,3 +91,24 @@ GitStrap-Dependencies
 The-Index-File 
 Using-GitStrap-With-GitLab
 ```
+
+## Code
+GitStrap uses the google-prettify project for code syntax highlighting. You can
+choose themes from
+[google](https://github.com/google/code-prettify/tree/9c3730f40994018a8ca9b786b088826b60d7b54a/styles)
+or
+[jmblog](https://github.com/jmblog/color-themes-for-google-code-prettify/tree/be5aa6fee61ad73f5a34ffb65099c8d1b3917602/dist/themes)
+. Some examples of valid themes are:
+
+    Examples: >desert, >doxy, >sons-of-obsidian, >sunburst, >tomorrow,
+              >tomorrow-night, >tomorrow-night-blue, >tomorrow-night-bright,
+              >tomorrow-night-eighties, >atelier-cave-dark,
+              >atelier-sulphurpool-dark, >atelier-cave-light, >github, and
+              >github-v2.
+
+You can also use a url that points to a specific css file. This setup uses
+the following:
+
+```
+>tomorrow
+```
