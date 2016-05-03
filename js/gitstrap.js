@@ -624,15 +624,15 @@ function BlogIndex(conf) {
 /* MAIN -------------------------------------------------------------------- */
 function renderPage() {
 
-    /* get the server config asap */
-    var gsConfig = new Config('Config');
-
     if (document.head == null) { // IE 8
         alert("You must update your browser to view this website.");
     }
 
     document.head.innerHTML = gs_html_head_tag;
     document.body.innerHTML = gs_html_body_tag;
+
+    /* get the server config asap */
+    var gsConfig = new Config('Config');
 
     /* load css afap */
     /* make sure these show up before more expensive processes happen */
