@@ -12,8 +12,9 @@
 var gs_jquery_url = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js";
 var gs_bootstrap_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js";
 var gs_showdown_url = "https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js";
-var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js"
-var gs_jsyaml_map_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js.map"
+var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js";
+var gs_jsyaml_map_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0/dist/js-yaml-front-client.min.js.map";
+var gs_scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
 
 /* load js deps */
 loadDependencies();
@@ -166,8 +167,7 @@ function loadAndExecuteScripts(aryScriptUrls, index, callback) {
 
 function loadDependencies() {
     /* load js synchronously */
-    var scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url];
-    loadAndExecuteScripts(scripts, 0, gs_jq_start);
+    loadAndExecuteScripts(gs_scripts, 0, gs_jq_start);
 }
 
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
@@ -249,12 +249,24 @@ function fillDiv(text, div){
     node.style.display = 'block';
 }
 
+/* showdown plus plugins etc... */
+function Showdown(text) {
+    showdown_options = {
+        parseImgDimensions: true,
+        ghCodeBlocks: true,
+        tables: true
+    }
+    var converter = new showdown.Converter(showdown_options);
+    console.log(converter);
+    return converter.makeHtml(text);
+}
+
 /* Download a markdown file, convert to HTML, then post to given div-id. */
 function MarkdownToHTML(relpath, markdown_div)
 {
     var callback = function (text) {
-        var converter = new showdown.Converter(),
-        html = converter.makeHtml(text);
+        html = Showdown(text);
+        console.log(html);
         fillDiv(html, markdown_div);
     };
 
@@ -296,8 +308,7 @@ function PostToHTML(relpath, markdown_body) {
                               ' | <small>'+date+'</small><br><br>';
 
         /* convert the unparsed content as markdown */
-        var converter = new showdown.Converter();
-        post_body.innerHTML = converter.makeHtml(obj.__content);
+        post_body.innerHTML = Showdown(obj.__content);
 
     };
     getFile(relpath, callback);
