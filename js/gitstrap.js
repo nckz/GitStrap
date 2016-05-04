@@ -624,8 +624,6 @@ function BlogIndex(conf) {
 /* MAIN -------------------------------------------------------------------- */
 function renderPage() {
 
-    document.body.innerHTML = gs_html_body_tag;
-
     /* get the server config asap */
     var gsConfig = new Config('Config');
 
@@ -634,6 +632,7 @@ function renderPage() {
     }
 
     document.head.innerHTML = gs_html_head_tag;
+    document.body.innerHTML = gs_html_body_tag;
 
     /* load css afap */
     /* make sure these show up before more expensive processes happen */
