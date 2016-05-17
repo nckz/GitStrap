@@ -20,14 +20,12 @@ var gs_jsyaml_url = "https://cdn.rawgit.com/dworthen/js-yaml-front-matter/v3.4.0
 var gs_googleprettify_url = "https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/src/prettify.js";
 var gs_scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url, gs_showdown_prettify_url, gs_googleprettify_url];
 
-/* load js deps */
-loadAndExecuteScripts(gs_scripts, 0, gs_jq_start);
-
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
 var gs_googleprettify_css_url = "https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/src/prettify.css";
 
 /* configurable elements */
+var gsConfig; //new Config('Config');
 var gs_blog_keyword = 'GSBLOG';
 var gs_post_path = 'posts';
 
@@ -41,6 +39,38 @@ var gs_nav_title_id = 'gs_nav_title_id';
 var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
+
+/* Required JS ------------------------------------------------------------- */
+/* This section will load all the required javascript determined above then
+ * start the 'main' function. */
+function getScript(url, callback) {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    // most browsers
+    script.onload = callback;
+    // IE 6 & 7
+    script.onreadystatechange = function() {
+        if (this.readyState == 'complete') {
+            callback();
+        }
+    }
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+function loadAndExecuteScripts(aryScriptUrls, index, callback) {
+    getScript(aryScriptUrls[index], function () {
+        if(index + 1 <= aryScriptUrls.length - 1) {
+            loadAndExecuteScripts(aryScriptUrls, index + 1, callback);
+        } else {
+            if(callback)
+                callback(aryScriptUrls, index);
+        }
+    });
+}
+
+/* load js deps */
+loadAndExecuteScripts(gs_scripts, 0, gs_jq_start);
 
 /* GITSTRAP VERSION -------------------------------------------------------- */
 /* This will change the url string to point to the selected version of
@@ -121,12 +151,14 @@ function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
-function add_style(url) {
+function add_style(url, setid) {
     var head  = document.getElementsByTagName('head')[0];
     var link  = document.createElement('link');
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = url;
+    var setid = typeof setid !== 'undefined' ?  setid : '';
+    link.id = setid;
     head.appendChild(link);
 }
 
@@ -142,32 +174,6 @@ function add_style_tag(csstext) {
     }
 
     head.appendChild(style);
-}
-
-function getScript(url, callback) {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    // most browsers
-    script.onload = callback;
-    // IE 6 & 7
-    script.onreadystatechange = function() {
-        if (this.readyState == 'complete') {
-            callback();
-        }
-    }
-    document.getElementsByTagName('head')[0].appendChild(script);
-}
-
-function loadAndExecuteScripts(aryScriptUrls, index, callback) {
-    getScript(aryScriptUrls[index], function () {
-        if(index + 1 <= aryScriptUrls.length - 1) {
-            loadAndExecuteScripts(aryScriptUrls, index + 1, callback);
-        } else {
-            if(callback)
-                callback();
-        }
-    });
 }
 
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
@@ -283,7 +289,9 @@ function setTheme(theme) {
     }
     
     /* css */
-    add_style(theme_url);
+    add_style(theme_url, 'main_theme');
+
+    return ['main_theme', theme_url];
 }
 
 /* Fill in the specified div innerHTML with the given text. */
@@ -617,20 +625,7 @@ function BlogIndex(conf) {
 /* MAIN -------------------------------------------------------------------- */
 function renderPage() {
 
-    /* get the server config asap */
-    var gsConfig = new Config('Config');
-
-    if (document.head == null) { // IE 8
-        alert("You must update your browser to view this website.");
-    }
-
-    document.head.innerHTML = gs_html_head_tag;
-    document.body.innerHTML = gs_html_body_tag;
-
-    /* load css afap */
-    /* make sure these show up before more expensive processes happen */
-    setTitle(gsConfig.title);
-    setTheme(gsConfig.theme);
+    /* load css */
     add_style_tag(gs_html_style_tag);
     setCodeTheme(gsConfig.code_theme);
 
@@ -658,21 +653,39 @@ function renderPage() {
          * that the getter can download it.  The getter should be post aware.*/
         MarkdownToHTML(gsConfig.requested_page, gs_body_id); 
     }
+    
+    /* show final contents */
+    $('body').fadeIn(667);
 } // - gitstrap()
 
 /* jQuery ------------------------------------------------------------------ */
 /* Wait for jquery to load before running these: */
-function gs_jq_start () {
+function gs_jq_start (arr, idx) {
+    if (idx == (arr.length-1)) {
 
-    if (window.jQuery) {
+        /* get the server config asap */
+        gsConfig = new Config('Config');
+
+        if (document.head == null) { // IE 8
+            alert("You must update your browser to view this website.");
+        }
+
+        /* load page and hide */
+        document.head.innerHTML = gs_html_head_tag;
+        document.body.innerHTML = gs_html_body_tag;
+        document.body.style.display = 'none';
+        setTitle(gsConfig.title);
+
+        /* get the main theme and wait until its loaded */
+        var theme = setTheme(gsConfig.theme);
+
+        /* start the rest of the gitstrap processing */
+        $("#"+theme[0]).load(renderPage);
 
         /* Link tab actions. */
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
             var href = $(e.target).attr('href');
             window.location.assign(href);
         })
-
-        /* start gitstrap processing */
-        $(document).ready(renderPage);
     }
 }
