@@ -21,7 +21,7 @@ var gs_googleprettify_url = "https://cdn.rawgit.com/google/code-prettify/9c3730f
 var gs_scripts = [gs_jquery_url, gs_bootstrap_url, gs_showdown_url, gs_jsyaml_url, gs_showdown_prettify_url, gs_googleprettify_url];
 
 /* load js deps */
-loadDependencies();
+loadAndExecuteScripts(gs_scripts, 0, gs_jq_start);
 
 /* css */
 var gs_default_theme_url = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
@@ -170,11 +170,6 @@ function loadAndExecuteScripts(aryScriptUrls, index, callback) {
     });
 }
 
-function loadDependencies() {
-    /* load js synchronously */
-    loadAndExecuteScripts(gs_scripts, 0, gs_jq_start);
-}
-
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async) {
 
@@ -307,7 +302,6 @@ function Showdown(text) {
         extensions: ['prettify']
     }
     var converter = new showdown.Converter(showdown_options);
-    console.log(converter);
     return converter.makeHtml(text);
 }
 
@@ -316,7 +310,6 @@ function MarkdownToHTML(relpath, markdown_div)
 {
     var callback = function (text) {
         html = Showdown(text);
-        console.log(html);
         fillDiv(html, markdown_div);
         $('.linenums').removeClass('linenums');
         prettyPrint();
