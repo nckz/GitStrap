@@ -39,6 +39,8 @@ var gs_nav_title_id = 'gs_nav_title_id';
 var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
+var gs_config_cnt = 0; // make sure the tag id is unique
+var gs_render_cnt = 0; // IE 11 triggers .load twice
 
 /* Required JS ------------------------------------------------------------- */
 /* This section will load all the required javascript determined above then
@@ -289,9 +291,11 @@ function setTheme(theme) {
     }
     
     /* css */
-    add_style(theme_url, 'main_theme');
+    var theme_id = 'main_theme_'+gs_config_cnt;
+    add_style(theme_url, theme_id);
+    gs_config_cnt++;
 
-    return ['main_theme', theme_url];
+    return [theme_id, theme_url];
 }
 
 /* Fill in the specified div innerHTML with the given text. */
@@ -625,6 +629,11 @@ function BlogIndex(conf) {
 /* MAIN -------------------------------------------------------------------- */
 function renderPage() {
 
+    if (gs_render_cnt > 0) {
+        return;
+    }
+    gs_render_cnt++;
+
     /* load css */
     add_style_tag(gs_html_style_tag);
     setCodeTheme(gsConfig.code_theme);
@@ -653,7 +662,7 @@ function renderPage() {
          * that the getter can download it.  The getter should be post aware.*/
         MarkdownToHTML(gsConfig.requested_page, gs_body_id); 
     }
-    
+ 
     /* show final contents */
     $('body').fadeIn(667);
 } // - gitstrap()
