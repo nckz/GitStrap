@@ -139,31 +139,13 @@ img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; 
 } ';
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
-function forceLoad (js_name, url) {
-    if (! window[js_name]) {
-        var js = document.createElement('script');
-        js.type = 'text/javascript';
-        js.src = url;
-        document.getElementsByTagName('head')[0].appendChild(js);
-    }
-}
-
+/* determine if a string object is blank */
 function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 }
 
-function add_style(url, setid) {
-    var head  = document.getElementsByTagName('head')[0];
-    var link  = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.type = 'text/css';
-    link.href = url;
-    var setid = typeof setid !== 'undefined' ?  setid : '';
-    link.id = setid;
-    head.appendChild(link);
-}
-
-function add_style_tag(csstext) {
+/* add a style tag from a string */
+function setStyleFromString(csstext) {
     var head  = document.getElementsByTagName('head')[0];
     var style = document.createElement('style');
     style.type = 'text/css';
@@ -177,23 +159,10 @@ function add_style_tag(csstext) {
     head.appendChild(style);
 }
 
+/* download a css file and install it as a stylesheet, then run the callback.*/
 function getCSS(url, callback) {
-    /* download a css file and install it as a stylesheet, then run the
-     * callback. */
-
     var setcss = function (csstext) {
-        var head  = document.getElementsByTagName('head')[0];
-        var style = document.createElement('style');
-        style.type = 'text/css';
-
-        if (style.styleSheet) {
-            style.stylesheet = csstext;
-        } else {
-            style.appendChild(document.createTextNode(csstext));
-        }
-
-        head.appendChild(style);
-
+        setStyleFromString(csstext);
         if(callback)
             callback();
     };
@@ -201,10 +170,9 @@ function getCSS(url, callback) {
     getFile(url, setcss);
 }
 
+/* A file getter that will push the text of a file to the callback function and
+ * generate and fetching errors to a tagged div on the index.html. */
 function getFile(filename, callback, async) {
-    /* A file getter that will push the text of a file to the callback function
-     * and generate and fetching errors to a tagged div on the index.html. */
-
     var async = typeof async !== 'undefined' ?  async : true;
 
     /* If the config file can be downloaded send its text to the callback.
@@ -253,7 +221,7 @@ function fillDiv(text, div){
     node.style.display = 'block';
 }
 
-/* showdown plus plugins etc... */
+/* parse input text using showdown plus plugins etc... */
 function Showdown(text) {
     showdown_options = {
         parseImgDimensions: true,
@@ -644,7 +612,7 @@ function BlogIndex(conf) {
 function renderPage() {
 
     /* load css */
-    add_style_tag(gs_html_style_tag);
+    setStyleFromString(gs_html_style_tag);
     getCSS(gsConfig.code_theme);
 
     /* fill in the navbar */
@@ -694,7 +662,8 @@ function gs_jq_start (arr, idx) {
         document.body.style.display = 'none';
         setTitle(gsConfig.title);
 
-        /* start the rest of the gitstrap processing */
+        /* Start the rest of the gitstrap processing after the theme has been
+         * downloaded. */
         getCSS(gsConfig.theme, renderPage);
 
         /* Link tab actions. */
