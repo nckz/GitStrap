@@ -40,7 +40,6 @@ var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 var gs_config_cnt = 0; // make sure the tag id is unique
-var gs_render_cnt = 0; // IE 11 triggers .load twice
 
 /* Required JS ------------------------------------------------------------- */
 /* This section will load all the required javascript determined above then
@@ -651,11 +650,6 @@ function BlogIndex(conf) {
 
 /* MAIN -------------------------------------------------------------------- */
 function renderPage() {
-
-    if (gs_render_cnt > 0) {
-        return;
-    }
-    gs_render_cnt++;
 
     /* load css */
     add_style_tag(gs_html_style_tag);
