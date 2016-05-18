@@ -14,7 +14,7 @@ to the [GitStrap Project Page](https://github.com/nckz/GitStrap) and then
 click the 'Fork' button in the upper right.
 
 #### Fork
-![fitw25](images/fork.png)
+![centerImage](images/fork.png =25%x*)
 
 # Step 2 - Make Your First Commit
 In order for GitStrap to show up under your project url, you'll have to make at
@@ -22,19 +22,19 @@ least one commit. -The Config file is a good place to start. Click on the
 'Config' file in your project's file browser.
 
 #### Config
-![fitw100](images/Config.png)
+![centerImage](images/Config.png =100%x*)
 
 Then click the edit button (the pencil icon) in the upper right hand corner.
 
 #### Edit
-![fitw50](images/Edit.png)
+![centerImage](images/Edit.png =50%x*)
 
 Rename the website by modifying the "Site Title" option.  When you're finished
 Scroll to the bottom of the page and submit your changes by clicking the
 "Commit changes" button.
 
 #### Commit
-![fitw100](images/Commit.png)
+![centerImage](images/Commit.png =100%x*)
 
 # Step 3 - Check Your GitHub URL
 Point your browser to the following address (replacing the `<username>` with your
@@ -50,7 +50,7 @@ You can now start to add your own content via the "New file", "Upload files" and
 'edit' (pencil button) capabilities within the GitHub website.
 
 #### New File, Upload Files
-![fitw50](images/NewFile.png)
+![centerImage](images/NewFile.png =50%x*)
 
 You can start by modifying the text in any of the existing documents:
 'Readme.md', 'Header', 'Footer', and 'Example'. If you create a new page file
@@ -71,9 +71,21 @@ Use the "Upload file" button to add images. For organization sake, upload your
 new images to the existing 'images' folder.  Images can then be added to your
 site pages with the following Markdown tag:
 
-#### `![fitw100](images/img_03.jpg)`
-Where `fitw100` means *scale the image to fit the width of the page* and
-`images/img_03.jpg` refers to an image file ('img_03.jpg') stored in the
-'images' folder.
+#### `![](images/img_03.jpg =100%x*)`
+Where the '`100%`' means *scale the image to fit the width of the page*. The
+'`x`' separates the image width and height parameters and the '`*`' means auto
+scale the height. The '`images/img_03.jpg`' refers to an image file
+('img_03.jpg') stored in the 'images' folder. 
 
-![fitw100](images/img_03.jpg)
+![centerImage](images/img_03.jpg =100%x*)
+
+Other options may look like these:
+
+```
+![](images/foo.jpg =100x80)   simple, assumes units are in px
+![](images/bar.jpg =100x*)    sets the height to "auto"
+![](images/baz.jpg =80%x5em)  image with width of 80% and height of 5em
+```
+
+For more information visit the
+[Showdown project page](https://github.com/showdownjs/showdown). 

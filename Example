@@ -1,6 +1,6 @@
 # Welcome to the Example Page
 
-![fitw100](images/img_01.jpg)
+![centerImage](images/img_01.jpg =100%x*)
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu massa
 venenatis, pharetra dolor nec, ultrices arcu. Nulla neque massa, accumsan a
@@ -92,4 +92,4 @@ sem nec tristique porttitor. Sed accumsan sollicitudin quam eget dictum. Proin
 dapibus neque tristique porta mollis. Vestibulum risus est, sodales sed arcu
 nec, luctus cursus tellus. Proin vitae metus quis ligula sagittis euismod.
 
-![fitw100](images/img_02.jpg)
+![centerImage](images/img_02.jpg =100%x*)
