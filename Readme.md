@@ -71,10 +71,11 @@ Use the "Upload file" button to add images. For organization sake, upload your
 new images to the existing 'images' folder.  Images can then be added to your
 site pages with the following Markdown tag:
 
-#### `![](images/img_03.jpg =100%x*)`
+#### `![centerImage](images/img_03.jpg =100%x*)`
 Where the '`100%`' means *scale the image to fit the width of the page*. The
 '`x`' separates the image width and height parameters and the '`*`' means auto
-scale the height. The '`images/img_03.jpg`' refers to an image file
+scale the height. The '`centerImage`' tag is optional and centers the image on
+the page horizontally. The '`images/img_03.jpg`' refers to an image file
 ('img_03.jpg') stored in the 'images' folder. 
 
 ![centerImage](images/img_03.jpg =100%x*)
@@ -88,4 +89,4 @@ Other options may look like these:
 ```
 
 For more information visit the
-[Showdown project page](https://github.com/showdownjs/showdown). 
+[Showdown project page](https://github.com/showdownjs/showdown).
