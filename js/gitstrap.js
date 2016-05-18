@@ -178,6 +178,28 @@ function add_style_tag(csstext) {
     head.appendChild(style);
 }
 
+function getCSS(url, callback) {
+
+    var setcss = function (csstext) {
+        var head  = document.getElementsByTagName('head')[0];
+        var style = document.createElement('style');
+        style.type = 'text/css';
+
+        if (style.styleSheet) {
+            style.stylesheet = csstext;
+        } else {
+            style.appendChild(document.createTextNode(csstext));
+        }
+
+        head.appendChild(style);
+
+        if(callback)
+            callback();
+    };
+
+    getFile(url, setcss);
+}
+
 /* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async) {
 
@@ -189,10 +211,11 @@ function getFile(filename, callback, async) {
     req.onreadystatechange = function() {
         if (req.status==200 && req.readyState==4) {
             callback(req.responseText);
-        }else if(req.status==404){
-            var err_txt = 'ERROR: 404, File Not Found: "' + filename + '"';
+        } else if((req.status==404 || req.status==403 || req.status==0) && req.readyState==4) {
+            var err_txt = 'ERROR: '+req.status+', When requesting: "' + filename + '"';
             fillDiv(err_txt, gs_error_id);
             console.log(err_txt);
+            $('body').fadeIn(667);
         }
     };
 
@@ -689,7 +712,7 @@ function gs_jq_start (arr, idx) {
         var theme = setTheme(gsConfig.theme);
 
         /* start the rest of the gitstrap processing */
-        $("#"+theme[0]).load(renderPage);
+        getCSS(theme[1], renderPage);
 
         /* Link tab actions. */
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
