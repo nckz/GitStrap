@@ -178,6 +178,8 @@ function add_style_tag(csstext) {
 }
 
 function getCSS(url, callback) {
+    /* download a css file and install it as a stylesheet, then run the
+     * callback. */
 
     var setcss = function (csstext) {
         var head  = document.getElementsByTagName('head')[0];
@@ -199,8 +201,9 @@ function getCSS(url, callback) {
     getFile(url, setcss);
 }
 
-/* A file getter that dumps 404 errors to a tagged div on the index.html. */
 function getFile(filename, callback, async) {
+    /* A file getter that will push the text of a file to the callback function
+     * and generate and fetching errors to a tagged div on the index.html. */
 
     var async = typeof async !== 'undefined' ?  async : true;
 
@@ -242,83 +245,6 @@ function setTitle(title) {
         document.getElementById(gs_ribbon_id).style.display = 'block';
     }
 } // - setTitle()
-
-/* Get the theme loaded first to ensure css is setup before. */
-function setCodeTheme(theme) {
-
-    /* determine where the theme is from */
-    var who = 'jmblog';
-    switch(theme) {
-        case 'desert':
-        case 'doxy':
-        case 'sons-of-obsidian':
-        case 'sunburst':
-            who = 'google';
-        break;
-    }
-
-    /* check for theme name or url */
-    var direct_url = theme;
-    var name_url = '';
-    if (who == 'google') {
-        name_url = 'https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/styles/' + theme + '.css';
-    } else {
-        name_url = 'https://cdn.rawgit.com/jmblog/color-themes-for-google-code-prettify/be5aa6fee61ad73f5a34ffb65099c8d1b3917602/dist/themes/' + theme + '.min.css';
-    }
-
-    /* check if this looks like a url */
-    var theme_url = '';
-    function valid_url(url){
-        return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
-    }
-
-    /* see if the user specifies the full url */
-    if (valid_url(direct_url)) {
-        theme_url = direct_url;
-    }
-    /* see if the user specified a bootswatch name */
-    else if (valid_url(name_url)) {
-        theme_url = name_url;
-    }else{
-        theme_url = gs_googleprettify_css_url;
-    }
-    
-    /* css */
-    add_style(theme_url);
-}
-
-/* Get the theme loaded first to ensure css is setup before. */
-function setTheme(theme) {
-
-    /* check for theme name or url */
-    var direct_url = theme;
-    var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' +
-        theme + '/bootstrap.min.css';
-
-    /* check if this looks like a url */
-    var theme_url = '';
-    function valid_url(url){
-        return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
-    }
-
-    /* see if the user specifies the full url */
-    if (valid_url(direct_url)) {
-        theme_url = direct_url;
-    }
-    /* see if the user specified a bootswatch name */
-    else if (valid_url(name_url)) {
-        theme_url = name_url;
-    }else{
-        theme_url = gs_default_theme_url;
-    }
-    
-    /* css */
-    var theme_id = 'main_theme_'+gs_config_cnt;
-    add_style(theme_url, theme_id);
-    gs_config_cnt++;
-
-    return [theme_id, theme_url];
-}
 
 /* Fill in the specified div innerHTML with the given text. */
 function fillDiv(text, div){
@@ -435,11 +361,11 @@ function Config(filename) {
          */
         self.title = options[0];
         self.nav_items = options[1].split(/\s*[\s,]\s*/); // split on whitespace
-        self.theme = options[2];
+        self.theme = self.resolveBootstrapThemeURL(options[2]);
         self.header = options[3];
         self.footer = options[4];
         self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
-        self.code_theme = options[6];
+        self.code_theme = self.resolvePrettifyThemeURL(options[6]);
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -522,6 +448,72 @@ function Config(filename) {
 
     this.postIsActive = function() {
         return self.post_active;
+    };
+
+    this.valid_url = function(url) {
+        return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
+    };
+
+    this.resolvePrettifyThemeURL = function(theme) {
+
+        /* determine where the theme is from */
+        var who = 'jmblog';
+        switch(theme) {
+            case 'desert':
+            case 'doxy':
+            case 'sons-of-obsidian':
+            case 'sunburst':
+                who = 'google';
+            break;
+        }
+
+        /* check for theme name or url */
+        var direct_url = theme;
+        var name_url = '';
+        if (who == 'google') {
+            name_url = 'https://cdn.rawgit.com/google/code-prettify/9c3730f40994018a8ca9b786b088826b60d7b54a/styles/' + theme + '.css';
+        } else {
+            name_url = 'https://cdn.rawgit.com/jmblog/color-themes-for-google-code-prettify/be5aa6fee61ad73f5a34ffb65099c8d1b3917602/dist/themes/' + theme + '.min.css';
+        }
+
+        /* check if this looks like a url */
+        var theme_url = '';
+
+        /* see if the user specifies the full url */
+        if (self.valid_url(direct_url)) {
+            theme_url = direct_url;
+        }
+        /* see if the user specified a bootswatch name */
+        else if (self.valid_url(name_url)) {
+            theme_url = name_url;
+        }else{
+            theme_url = gs_googleprettify_css_url;
+        }
+
+        return theme_url;
+    };
+
+    this.resolveBootstrapThemeURL = function(theme) {
+        /* check for theme name or url */
+        var direct_url = theme;
+        var name_url = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/' +
+            theme + '/bootstrap.min.css';
+
+        /* check if this looks like a url */
+        var theme_url = '';
+
+        /* see if the user specifies the full url */
+        if (self.valid_url(direct_url)) {
+            theme_url = direct_url;
+        }
+        /* see if the user specified a bootswatch name */
+        else if (self.valid_url(name_url)) {
+            theme_url = name_url;
+        } else {
+            theme_url = gs_default_theme_url;
+        }
+
+        return theme_url;
     };
 
     /* Initialize with Config data. This is the first required step for setting
@@ -653,7 +645,7 @@ function renderPage() {
 
     /* load css */
     add_style_tag(gs_html_style_tag);
-    setCodeTheme(gsConfig.code_theme);
+    getCSS(gsConfig.code_theme);
 
     /* fill in the navbar */
     var gsNav = new Nav(gsConfig);
@@ -702,11 +694,8 @@ function gs_jq_start (arr, idx) {
         document.body.style.display = 'none';
         setTitle(gsConfig.title);
 
-        /* get the main theme and wait until its loaded */
-        var theme = setTheme(gsConfig.theme);
-
         /* start the rest of the gitstrap processing */
-        getCSS(theme[1], renderPage);
+        getCSS(gsConfig.theme, renderPage);
 
         /* Link tab actions. */
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
