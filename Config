@@ -5,7 +5,7 @@ wrapped in a code block '<code>```</code>' for actual configuration options
 ([see the actual file for how this
 looks](https://github.com/nckz/GitStrap/blob/gh-pages/Config)).
 
-## Site Title
+## 1. Site Title
 This title will show up on the left side of the navigation bar and on the
 browser tab.
 
@@ -18,7 +18,7 @@ This setup uses the following:
 ```
 
 <a name="pagesandnav"></a>
-## Pages / Navigation
+## 2. Pages / Navigation
 List your pages below in the order in which you'd like them to show up on your
 website's navigation bar. Make sure each item is separated by a space. These
 pages must reflect an actual filename in the root/base directory, you can start
@@ -37,7 +37,7 @@ This setup uses the following:
 >Readme.md Config Header Footer Example GSBLOG
 ```
 
-## Theme
+## 3. Theme
 Put the theme name or url from [bootswatch](https://www.bootstrapcdn.com/bootswatch/).
 
     Examples: >cerulean, >cosmo, >cyborg, >darkly, >flatly, >journal, >lumen,
@@ -50,7 +50,7 @@ This setup uses the following:
 >journal
 ```
 
-## Header
+## 4. Header
 A running header text can be specified in a file, if desired.  To turn off the
 header text set this option to false.
     
@@ -62,7 +62,7 @@ This setup uses the following:
 >Header
 ```
 
-## Footer
+## 5. Footer
 A running footer for each page.
 
     Example: >false
@@ -73,7 +73,7 @@ This setup uses the following:
 >Footer
 ```
 
-## Blog
+## 6. Blog
 If a blog is desired, the post files (stored in `/posts/` directory) will be
 included in the same way as navigation items.  Include the desired blog entires
 by adding them to the list.  If a blog is desired, make sure to set the
@@ -92,7 +92,7 @@ The-Index-File
 Using-GitStrap-With-GitLab
 ```
 
-## Code
+## 7. Code
 GitStrap uses the google-prettify project for code syntax highlighting. You can
 choose themes from
 [google](https://github.com/google/code-prettify/tree/9c3730f40994018a8ca9b786b088826b60d7b54a/styles)
@@ -111,4 +111,18 @@ the following:
 
 ```
 >tomorrow
+```
+
+## 8. Google Analytics
+To allow [Google Analytics](https://analytics.google.com/) tracking set your
+Google Analytics [tracking
+ID](https://support.google.com/analytics/answer/1032385?hl=en) here, or set to
+`false` if its not used:
+
+    Example: >UA-000000-01
+        or
+    Example: >false
+
+```
+>UA-76185171-2
 ```

@@ -40,6 +40,7 @@ var gs_title_id = 'gs_title_id';
 var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 var gs_config_cnt = 0; // make sure the tag id is unique
+var gs_ga_script_id = 'gs_ga_script_id';
 
 /* Required JS ------------------------------------------------------------- */
 /* This section will load all the required javascript determined above then
@@ -120,6 +121,8 @@ var gs_html_body_tag = ' \
     <hr> \
     <footer class="footer text-center" id="gs_footer_id" style="display: none;"> \
     </footer> \
+    <!-- Google Analytics --> \
+    <script id="gs_ga_script_id"></script> \
 </div> <!-- /container -->';
 
 /* STYLE TAG --------------------------------------------------------------- */
@@ -281,6 +284,19 @@ function PostToHTML(relpath, markdown_body) {
     getFile(relpath, callback);
 }
 
+/* Google Analytics */
+function sendGoogleAnalytics(ga_tracker_id) {
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments) },i[r].l=1*new Date();
+      a=s.createElement(o),m=s.getElementById(gs_ga_script_id);a.async=1;
+      a.src=g;m.parentNode.insertBefore(a,m)})
+      (window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', ga_tracker_id, 'auto');
+    ga('send', 'pageview');
+}
+
 /* OBJECTS ----------------------------------------------------------------- */
 /* Config object
  * 'Config' file parser object */
@@ -298,6 +314,7 @@ function Config(filename) {
     this.blog_items = []; // list of strings, filenames of posts
     this.requested_page = ""; // the client requested page based on url query
     this.post_active = false; // signal if a post is active, set by determineActivePage().
+    this.ga_tracker_id = "false"; // Google Analytics Tracker ID
 
     this.parseFile = function (text) {
 
@@ -314,12 +331,14 @@ function Config(filename) {
             }
         }
 
-        /* line 0: title 
-         * line 1: nav filenames
-         * line 2: theme name or url
-         * line 3: header filename
-         * line 4: footer filename
-         * line 5: blog filenames
+        /*  1: title 
+         *  2: nav filenames
+         *  3: theme name or url
+         *  4: header filename
+         *  5: footer filename
+         *  6: blog filenames
+         *  7: code highlighting
+         *  8: google analytics
          */
         self.title = options[0];
         self.nav_items = options[1].split(/\s*[\s,]\s*/); // split on whitespace
@@ -328,6 +347,7 @@ function Config(filename) {
         self.footer = options[4];
         self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
         self.code_theme = self.resolvePrettifyThemeURL(options[6]);
+        self.ga_tracker_id = options[7];
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -344,6 +364,10 @@ function Config(filename) {
 
     this.footerIsActive = function() {
         return self.footer != 'false';
+    };
+
+    this.gaIsActive = function() {
+        return self.ga_tracker_id != 'false';
     };
 
     this.determineActivePage = function() {
@@ -634,6 +658,11 @@ function renderPage() {
         MarkdownToHTML(gsConfig.requested_page, gs_body_id); 
     }
  
+    /* send to analytics if its set */
+    if (gsConfig.gaIsActive()) {
+        sendGoogleAnalytics(Config.ga_tracker_id);
+    }
+
     /* show final contents */
     $('body').fadeIn(667);
 } // - gitstrap()
