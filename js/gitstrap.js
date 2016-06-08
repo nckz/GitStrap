@@ -660,7 +660,7 @@ function renderPage() {
  
     /* send to analytics if its set */
     if (gsConfig.gaIsActive()) {
-        sendGoogleAnalytics(Config.ga_tracker_id);
+        sendGoogleAnalytics(gsConfig.ga_tracker_id);
     }
 
     /* show final contents */
