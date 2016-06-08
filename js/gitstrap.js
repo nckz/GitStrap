@@ -291,7 +291,7 @@ function sendGoogleAnalytics(ga_tracker_id) {
       (i[r].q=i[r].q||[]).push(arguments) },i[r].l=1*new Date();
       a=s.createElement(o),m=s.getElementById(gs_ga_script_id);a.async=1;
       a.src=g;m.parentNode.insertBefore(a,m)})
-      (window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      (window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', ga_tracker_id, 'auto');
     ga('send', 'pageview');
