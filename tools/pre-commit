@@ -9,5 +9,6 @@ jsmin <gitstrap.js> gitstrap.min.js
 
 cd ${BASE}
 git add ${BASE}/js/*.min.js
+git add ${BASE}/js/*.js
 
 exit 0
