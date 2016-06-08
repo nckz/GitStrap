@@ -84,6 +84,8 @@ var gs_version = ''
 var gs_html_head_tag = ' \
     <meta charset="utf-8"> \
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> \
+    <!-- Google Analytics --> \
+    <script id="gs_ga_script_id"></script> \
     <meta name="viewport" content="width=device-width, initial-scale=1">';
 
 /* BODY TAG ---------------------------------------------------------------- */
@@ -121,8 +123,6 @@ var gs_html_body_tag = ' \
     <hr> \
     <footer class="footer text-center" id="gs_footer_id" style="display: none;"> \
     </footer> \
-    <!-- Google Analytics --> \
-    <script id="gs_ga_script_id"></script> \
 </div> <!-- /container -->';
 
 /* STYLE TAG --------------------------------------------------------------- */
@@ -291,7 +291,7 @@ function sendGoogleAnalytics(ga_tracker_id) {
       (i[r].q=i[r].q||[]).push(arguments) },i[r].l=1*new Date();
       a=s.createElement(o),m=s.getElementById(gs_ga_script_id);a.async=1;
       a.src=g;m.parentNode.insertBefore(a,m)})
-      (window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      (window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', ga_tracker_id, 'auto');
     ga('send', 'pageview');
