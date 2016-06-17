@@ -129,11 +129,18 @@ var gs_html_body_tag = ' \
 var gs_html_style_tag = ' \
 /* give an option for centering images */ \
 img[alt=centerImage] { float: center; display: block; margin-left: auto; margin-right: auto } \
-/* make an "active" tab */ \
-.non-active-nav { \
-    -webkit-filter: opacity(75%); /* Chrome, Safari, Opera */ \
-    filter: opacity(75%); \
-} ';
+/* markdown extras - Use these "fitw<%>" attributes for the alt text to scale an image */ \
+img[alt=fitwidth] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto } \
+img[alt=fitw100] { width: 100%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw75] { width: 75%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw50] { width: 50%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw25] { width: 25%; float: center; display: block; margin-left: auto; margin-right: auto} \
+img[alt=fitw10] { width: 10%; float: center; display: block; margin-left: auto; margin-right: auto} \
+ /* make an "active" tab */ \
+ .non-active-nav { \
+     -webkit-filter: opacity(75%); /* Chrome, Safari, Opera */ \
+         filter: opacity(75%); \
+ } ';
 
 /* HELPER FUNCTIONS -------------------------------------------------------- */
 /* determine if a string object is blank */

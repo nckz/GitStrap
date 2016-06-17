@@ -14,7 +14,7 @@ to the [GitStrap Project Page](https://github.com/nckz/GitStrap) and then
 click the 'Fork' button in the upper right.
 
 #### Fork
-![centerImage](images/fork.png =25%x*)
+![fitw25](images/fork.png)
 
 # Step 2 - Make Your First Commit
 In order for GitStrap to show up under your project url, you'll have to make at
@@ -22,19 +22,19 @@ least one commit. -The Config file is a good place to start. Click on the
 'Config' file in your project's file browser.
 
 #### Config
-![centerImage](images/Config.png =100%x*)
+![fitw100](images/Config.png)
 
 Then click the edit button (the pencil icon) in the upper right hand corner.
 
 #### Edit
-![centerImage](images/Edit.png =50%x*)
+![fitw50](images/Edit.png)
 
 Rename the website by modifying the "Site Title" option.  When you're finished
 Scroll to the bottom of the page and submit your changes by clicking the
 "Commit changes" button.
 
 #### Commit
-![centerImage](images/Commit.png =100%x*)
+![fitw100](images/Commit.png)
 
 # Step 3 - Check Your GitHub URL
 Point your browser to the following address (replacing the `<username>` with your
@@ -50,7 +50,7 @@ You can now start to add your own content via the "New file", "Upload files" and
 'edit' (pencil button) capabilities within the GitHub website.
 
 #### New File, Upload Files
-![centerImage](images/NewFile.png =50%x*)
+![fitw50](images/NewFile.png)
 
 You can start by modifying the text in any of the existing documents:
 'Readme.md', 'Header', 'Footer', and 'Example'. If you create a new page file
@@ -78,7 +78,7 @@ scale the height. The '`centerImage`' tag is optional and centers the image on
 the page horizontally. The '`images/img_03.jpg`' refers to an image file
 ('img_03.jpg') stored in the 'images' folder. 
 
-![centerImage](images/img_03.jpg =100%x*)
+![fitw100](images/img_03.jpg)
 
 Other options may look like these:
 
