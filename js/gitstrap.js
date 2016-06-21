@@ -119,10 +119,13 @@ var gs_html_body_tag = ' \
     <div class="jumbotron" id="gs_header_id" style="display: none;"></div> \
     <!-- Markdown Content --> \
     <div id="gs_body_id"> </div> \
+    <!-- Disqus Comments --> \
+    <div id="disqus_thread"></div> \
     <!-- Running Footer--> \
     <hr> \
     <footer class="footer text-center" id="gs_footer_id" style="display: none;"> \
     </footer> \
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> \
 </div> <!-- /container -->';
 
 /* STYLE TAG --------------------------------------------------------------- */
@@ -304,6 +307,24 @@ function sendGoogleAnalytics(ga_tracker_id) {
     ga('send', 'pageview');
 }
 
+/* Disqus Comments */
+function showDisqusComments(DISQUS_SHORTNAME) {
+    /*
+    var disqus_config = function () {
+        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    */
+    (function() {  // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//'+DISQUS_SHORTNAME+'.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+}
+
 /* OBJECTS ----------------------------------------------------------------- */
 /* Config object
  * 'Config' file parser object */
@@ -322,6 +343,7 @@ function Config(filename) {
     this.requested_page = ""; // the client requested page based on url query
     this.post_active = false; // signal if a post is active, set by determineActivePage().
     this.ga_tracker_id = "false"; // Google Analytics Tracker ID
+    this.disqus_shortname = "false"; // Disqus Site Shortname
 
     this.parseFile = function (text) {
 
@@ -346,6 +368,7 @@ function Config(filename) {
          *  6: blog filenames
          *  7: code highlighting
          *  8: google analytics
+         *  9: disqus shortname
          */
         self.title = options[0];
         self.nav_items = options[1].split(/\s*[\s,]\s*/); // split on whitespace
@@ -355,6 +378,7 @@ function Config(filename) {
         self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
         self.code_theme = self.resolvePrettifyThemeURL(options[6]);
         self.ga_tracker_id = options[7];
+        self.disqus_shortname = options[8];
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -375,6 +399,10 @@ function Config(filename) {
 
     this.gaIsActive = function() {
         return self.ga_tracker_id != 'false';
+    };
+
+    this.disqusIsActive = function() {
+        return self.disqus_shortname != 'false';
     };
 
     this.determineActivePage = function() {
@@ -659,6 +687,12 @@ function renderPage() {
     } else if (gsConfig.postIsActive()) {
         /* If a post was found in the url query. */
         PostToHTML(gs_post_path+'/'+gsConfig.requested_page, gs_body_id);
+
+        /* add disqus comments to each blog post */
+        if (gsConfig.disqusIsActive()) {
+            showDisqusComments(gsConfig.disqus_shortname);
+        }
+
     } else {
         /* The active page needs to correspond to a file at this point so 
          * that the getter can download it.  The getter should be post aware.*/
@@ -672,6 +706,7 @@ function renderPage() {
 
     /* show final contents */
     $('body').fadeIn(667);
+
 } // - gitstrap()
 
 /* jQuery ------------------------------------------------------------------ */

@@ -83,9 +83,10 @@ the first element in the post list:
     Example: >Index post1 post2 post3 post4
 
 Where "Index" would be the blog index link name. This setup uses the following
-(where "More" is the blog link and each blog file is listed on a new line):
+(where "Blog" is the link to the blog index and each blog file is listed on a
+new line or separated with a space as shown above):
 ```
->More 
+>Blog 
 Using-The-Blog 
 GitStrap-Dependencies 
 The-Index-File 
@@ -125,4 +126,18 @@ ID](https://support.google.com/analytics/answer/1032385?hl=en) here, or set to
 
 ```
 >UA-76185171-2
+```
+
+## 9. Disqus Blog Comments
+To add [Disqus](https://disqus.com) comments to the blog section, set your
+site's [disqus
+shortname](https://help.disqus.com/customer/portal/articles/466208) here, or
+set to `false` if its not used:
+
+    Example: >myblogname
+        or
+    Example: >false
+
+```
+>gitstrap
 ```
