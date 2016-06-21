@@ -88,5 +88,5 @@ Other options may look like these:
 ![](images/baz.jpg =80%x5em)  image with width of 80% and height of 5em
 ```
 
-For more information visit the
+For more information on markdown syntax visit the
 [Showdown project page](https://github.com/showdownjs/showdown).
