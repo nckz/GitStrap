@@ -125,7 +125,6 @@ var gs_html_body_tag = ' \
     <hr> \
     <footer class="footer text-center" id="gs_footer_id" style="display: none;"> \
     </footer> \
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> \
 </div> <!-- /container -->';
 
 /* STYLE TAG --------------------------------------------------------------- */
