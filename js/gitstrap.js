@@ -355,8 +355,8 @@ function Config(filename) {
         code = dummy.getElementsByTagName('code');
         for( i=0; i<code.length;i++) {
             if (code[i].innerHTML.match(/^&gt;\S+/)) {
-                /* remove '>' and new-line/line-breaks */
-                options.push(code[i].innerHTML.replace(/^&gt;/, '').replace(/\r?\n|\r/g,''));
+                /* remove '>' and replace new-line/line-breaks with a space */
+                options.push(code[i].innerHTML.replace(/^&gt;/, '').replace(/\r?\n|\r/g,' ').trim());
             }
         }
 
@@ -371,11 +371,11 @@ function Config(filename) {
          *  9: disqus shortname
          */
         self.title = options[0];
-        self.nav_items = options[1].split(/\s*[\s,]\s*/); // split on whitespace
+        self.nav_items = options[1].split(/\s+/); // split on whitespace
         self.theme = self.resolveBootstrapThemeURL(options[2]);
         self.header = options[3];
         self.footer = options[4];
-        self.blog_items = options[5].split(/\s*[\s,]\s*/); // split on whitespace
+        self.blog_items = options[5].split(/\s+/); // split on whitespace
         self.code_theme = self.resolvePrettifyThemeURL(options[6]);
         self.ga_tracker_id = options[7];
         self.disqus_shortname = options[8];
