@@ -41,6 +41,8 @@ var gs_nav_placeholder_id = 'gs_nav_placeholder_id';
 var gs_navbar_id = 'gs_navbar_id';
 var gs_config_cnt = 0; // make sure the tag id is unique
 var gs_ga_script_id = 'gs_ga_script_id';
+var gs_pagination_links_id = 'gs_pagination_links_id';
+var gs_pagination_div_id = 'gs_pagination_div_id';
 
 /* Required JS ------------------------------------------------------------- */
 /* This section will load all the required javascript determined above then
@@ -118,7 +120,14 @@ var gs_html_body_tag = ' \
     <!-- Running Header --> \
     <div class="jumbotron" id="gs_header_id" style="display: none;"></div> \
     <!-- Markdown Content --> \
-    <div id="gs_body_id"> </div> \
+    <div id="gs_body_id"></div> \
+    <!-- Pagination Links --> \
+    <div id="gs_pagination_div_id" style="display: none;"> \
+        <nav> \
+        <ul class="pagination" id="gs_pagination_links_id"> \
+        </ul> \
+        </nav>  \
+    </div> \
     <!-- Disqus Comments --> \
     <div id="disqus_thread"></div> \
     <!-- Running Footer--> \
@@ -343,6 +352,8 @@ function Config(filename) {
     this.post_active = false; // signal if a post is active, set by determineActivePage().
     this.ga_tracker_id = "false"; // Google Analytics Tracker ID
     this.disqus_shortname = "false"; // Disqus Site Shortname
+    this.pagination = 2; // number of posts per page (0 means all posts on one)
+    this.requested_blog_index_page = 0; // the URL query 'p='
 
     this.parseFile = function (text) {
 
@@ -423,11 +434,27 @@ function Config(filename) {
         /* pages take precedence */
         var page_found = 0;
         var page_index = -1;
-        var req_page = self.getURLParameter('page');
-        if (! (req_page == 'null' || req_page == null)) {
-            page_index = self.nav_items_bname.indexOf(req_page);
+        var reqPage = self.getURLParameter('page');
+        if (! (reqPage == 'null' || reqPage == null)) {
+            page_index = self.nav_items_bname.indexOf(reqPage);
             if (page_index >= 0) {
                 page_found = 1;
+            }
+
+            /* if pagination is required then get the requested params */
+            if (self.paginationIsActive()) {
+                /* save any pagination query and check bounds */
+                self.requested_blog_index_page = parseInt(self.getURLParameter('p'));
+                if (!Number.isInteger(self.requested_blog_index_page)) {
+                    self.requested_blog_index_page = 1;
+                }
+                if (self.requested_blog_index_page < 1) {
+                    self.requested_blog_index_page = 1;
+                }
+                if ((self.requested_blog_index_page * self.pagination) >
+                        (self.blog_items.length - 1) ) { // count the index page
+                    self.requested_blog_index_page = 1;
+                }
             }
         }
 
@@ -445,6 +472,10 @@ function Config(filename) {
         self.requested_page = active_page;
     };
 
+    this.numBlogIndexPages = function() {
+        return Math.ceil((self.blog_items.length-1) / self.pagination);
+    };
+
     /* Parse the query string for 'name'. */
     this.getURLParameter = function(name) {
         return decodeURI((RegExp(name + '=' +
@@ -455,7 +486,7 @@ function Config(filename) {
     this.isBlog = function() {
         return (self.nav_items.indexOf(gs_blog_keyword) >= 0);
     };
-    
+
     /* Return true if the blog index was requested */
     this.blogIndexIsActive = function() {
         if (self.isBlog()) {
@@ -464,6 +495,11 @@ function Config(filename) {
             }
         }
         return false;
+    };
+
+    this.paginationIsActive = function() {
+        return ((self.pagination > 0) && (self.pagination <
+                    (self.blog_items.length - 1))); // count the index page
     };
 
     this.postIsActive = function() {
@@ -593,6 +629,69 @@ function Nav(conf) {
 
 } // - Nav()
 
+/* PageNav object 
+ * Populates pagination navbar based on user config. */
+function PageNav(conf) {
+
+    var self = this;
+
+    this.conf = conf;
+    this.pagination_ul = document.getElementById(gs_pagination_links_id);
+    this.pagination_div = document.getElementById(gs_pagination_div_id);
+
+    /* The nav is a <ul> with items <li> and page links <a>. */
+    this.genNavListTags = function() {
+
+        /* get number of pages */
+        var numPages = self.conf.numBlogIndexPages();     
+        var blogTitle = self.conf.blog_items[0];
+        var reqPage = self.conf.requested_blog_index_page;
+
+        /* setup "previous page" button */
+        if (reqPage > 1) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+            appendAttribute(a, 'href', '?page='+blogTitle+'&p='+(reqPage-1)+'#');
+            a.innerHTML = "&laquo;";
+            li.appendChild(a);
+            self.pagination_ul.appendChild(li);
+        }
+
+        /* setup numbered page links */
+        for (index = 1; index <= numPages; index++) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+
+            appendAttribute(a, 'href', '?page='+blogTitle+'&p='+index+'#');
+
+            /* set nav button name */
+            if (index == reqPage) {
+                appendAttribute(li, 'class', 'disabled');
+                a.innerHTML = "<b>"+index+"</b>";
+            } else {
+                a.innerHTML = index;
+            }
+
+            li.appendChild(a);
+            self.pagination_ul.appendChild(li);
+        }
+
+        /* setup "next page" button */
+        if (reqPage < numPages) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+            appendAttribute(a, 'href', '?page='+blogTitle+'&p='+(reqPage+1)+'#');
+            a.innerHTML = "&raquo;";
+            li.appendChild(a);
+            self.pagination_ul.appendChild(li);
+        }
+
+        this.pagination_div.style.display = 'block';
+    };
+    this.genNavListTags();
+
+} // - PageNav()
+
 /* BlogIndex object 
  * Populates the blog index page. 
  *  -eventually pagination.
@@ -606,12 +705,24 @@ function BlogIndex(conf) {
     this.genBlogIndex = function() {
 
         /* write some HTML to format the data */
-        var md_body_obj = document.getElementById(gs_body_id);
+        var mdBodyObj = document.getElementById(gs_body_id);
         var ul = document.createElement('ul');
         appendAttribute(ul, 'class', 'list-group');
-        md_body_obj.appendChild(ul);
+        mdBodyObj.appendChild(ul);
 
-        for (index = 1; index < self.conf.blog_items.length; index++) {
+        var firstPost = 1;
+        var reqPage = self.conf.requested_blog_index_page;
+        var pgMax = self.conf.pagination;
+
+        if (self.conf.paginationIsActive()) {
+            firstPost = (reqPage-1) * pgMax + 1;
+            var gsPagination = new PageNav(gsConfig);
+        }
+
+        var pgCnt = 0;
+        for (index = firstPost; index < self.conf.blog_items.length; index++) {
+            if (pgCnt >= pgMax) { break; }
+
             var item = self.conf.blog_items[index];
             var li = document.createElement('li');
             li.setAttribute('id', item);
@@ -619,6 +730,7 @@ function BlogIndex(conf) {
             ul.appendChild(li);
 
             self.PostPreviewToHTML(gs_post_path+'/'+item, item);
+            pgCnt++;
         }
     };
 
