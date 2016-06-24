@@ -685,7 +685,36 @@ function PageNav(conf) {
 
         this.pagination_div.style.display = 'block';
     };
-    this.genNavListTags();
+
+    /* The nav is a <ul> with items <li> and page links <a>. */
+    this.genPostNavListTags = function() {
+
+        /* get current post */
+        var reqPost = self.conf.getURLParameter('post');
+        var index = self.conf.blog_items.indexOf(reqPost);
+
+        /* setup "previous page" button */
+        if (index > 1) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+            appendAttribute(a, 'href', '?post='+self.conf.blog_items[index-1]);
+            a.innerHTML = "&laquo;";
+            li.appendChild(a);
+            self.pagination_ul.appendChild(li);
+        }
+
+        /* setup "next page" button */
+        if (index < (self.conf.blog_items.length-1)) {
+            var li = document.createElement('li');
+            var a  = document.createElement('a');
+            appendAttribute(a, 'href', '?post='+self.conf.blog_items[index+1]);
+            a.innerHTML = "&raquo;";
+            li.appendChild(a);
+            self.pagination_ul.appendChild(li);
+        }
+
+        this.pagination_div.style.display = 'block';
+    };
 
 } // - PageNav()
 
@@ -715,6 +744,7 @@ function BlogIndex(conf) {
             itemMax = self.conf.pagination;
             firstPost = (reqPage-1) * itemMax + 1;
             var gsPagination = new PageNav(gsConfig);
+            gsPagination.genNavListTags();
         }
 
         var itemCnt = 0;
@@ -802,6 +832,10 @@ function renderPage() {
         if (gsConfig.disqusIsActive()) {
             showDisqusComments(gsConfig.disqus_shortname);
         }
+
+        /* render previous and next links */
+        var gsPagination = new PageNav(gsConfig);
+        gsPagination.genPostNavListTags();
 
     } else {
         /* The active page needs to correspond to a file at this point so 
