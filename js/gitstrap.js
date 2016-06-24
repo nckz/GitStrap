@@ -664,8 +664,7 @@ function PageNav(conf) {
 
             /* set nav button name */
             if (index == reqPage) {
-                appendAttribute(li, 'class', 'disabled');
-                a.innerHTML = "<b>"+index+"</b>";
+                a.innerHTML = "<em><b>"+index+"</b></em>";
             } else {
                 a.innerHTML = index;
             }
