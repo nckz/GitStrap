@@ -352,7 +352,7 @@ function Config(filename) {
     this.post_active = false; // signal if a post is active, set by determineActivePage().
     this.ga_tracker_id = "false"; // Google Analytics Tracker ID
     this.disqus_shortname = "false"; // Disqus Site Shortname
-    this.pagination = 2; // number of posts per page (0 means all posts on one)
+    this.pagination = 0; // number of posts per page (0 means all posts on one)
     this.requested_blog_index_page = 0; // the URL query 'p='
 
     this.parseFile = function (text) {
@@ -379,6 +379,7 @@ function Config(filename) {
          *  7: code highlighting
          *  8: google analytics
          *  9: disqus shortname
+         *  10: pagination
          */
         self.title = options[0];
         self.nav_items = options[1].split(/\s+/); // split on whitespace
@@ -389,6 +390,7 @@ function Config(filename) {
         self.code_theme = self.resolvePrettifyThemeURL(options[6]);
         self.ga_tracker_id = options[7];
         self.disqus_shortname = options[8];
+        self.pagination = options[9];
 
         /* replace BLOG with blog name */
         self.nav_items_bname = self.nav_items.slice(); // copy
@@ -449,10 +451,6 @@ function Config(filename) {
                     self.requested_blog_index_page = 1;
                 }
                 if (self.requested_blog_index_page < 1) {
-                    self.requested_blog_index_page = 1;
-                }
-                if ((self.requested_blog_index_page * self.pagination) >
-                        (self.blog_items.length - 1) ) { // count the index page
                     self.requested_blog_index_page = 1;
                 }
             }
@@ -712,16 +710,17 @@ function BlogIndex(conf) {
 
         var firstPost = 1;
         var reqPage = self.conf.requested_blog_index_page;
-        var pgMax = self.conf.pagination;
+        var itemMax = self.conf.blog_items.length;
 
         if (self.conf.paginationIsActive()) {
-            firstPost = (reqPage-1) * pgMax + 1;
+            itemMax = self.conf.pagination;
+            firstPost = (reqPage-1) * itemMax + 1;
             var gsPagination = new PageNav(gsConfig);
         }
 
-        var pgCnt = 0;
+        var itemCnt = 0;
         for (index = firstPost; index < self.conf.blog_items.length; index++) {
-            if (pgCnt >= pgMax) { break; }
+            if (itemCnt >= itemMax) { break; }
 
             var item = self.conf.blog_items[index];
             var li = document.createElement('li');
@@ -730,12 +729,12 @@ function BlogIndex(conf) {
             ul.appendChild(li);
 
             self.PostPreviewToHTML(gs_post_path+'/'+item, item);
-            pgCnt++;
+            itemCnt++;
         }
     };
 
-    /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
-     * post to given div-id. */
+    /* Download a post file (yaml + markdown), parse YAML, convert to HTML,
+     * then post to given div-id. */
     this.PostPreviewToHTML = function(relpath, markdown_div) {
         var callback = function (text) {
 
@@ -743,7 +742,8 @@ function BlogIndex(conf) {
             text = text.replace("(((",'---');
             text = text.replace(")))",'---');
 
-            if ((isBlank(text)) || (text == null) || (text == 'null') || (typeof text === 'undefined')) {
+            if ((isBlank(text)) || (text == null) || (text == 'null') ||
+                    (typeof text === 'undefined')) {
                 var li = document.getElementById(markdown_div);
                 li.innerHTML = 'Unable to load text for: '+relpath;
                 return;

@@ -124,6 +124,8 @@ ID](https://support.google.com/analytics/answer/1032385?hl=en) here, or set to
         or
     Example: >false
 
+This site uses:
+
 ```
 >UA-76185171-2
 ```
@@ -138,6 +140,20 @@ set to `false` if its not used:
         or
     Example: >false
 
+This site uses:
+
 ```
 >gitstrap
+```
+
+## 10. Pagination
+The number of blog posts that fit on a single page can be set here.  A zero
+value will turn off pagination and all posts will go on a single page.
+
+    Example: >0
+
+This site uses:
+
+```
+>3
 ```
