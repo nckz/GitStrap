@@ -926,7 +926,7 @@ function gs_jq_start (arr, idx) {
 
         /* load page and hide */
         document.head.innerHTML = gs_html_head_tag;
-        //document.body.innerHTML = gs_html_body_tag;
+        document.body.innerHTML = gs_html_body_tag;
         document.body.style.display = 'none';
         setTitle(gsConfig.title);
 
