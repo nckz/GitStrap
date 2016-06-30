@@ -602,8 +602,9 @@ function Sitemap(conf) {
     var self = this;
 
     this.conf = conf;
+    this.baseurl = document.URL.split('?')[0];
     /* list the sitemap url */
-    this.urls = [document.location.host+'/?sitemap=true'];
+    this.urls = [this.baseurl+'?sitemap=true'];
     this.text = '';
 
     this.listURLs = function() {
@@ -611,12 +612,12 @@ function Sitemap(conf) {
         /* get the full url for pages */
         for (index = 0; index < self.conf.nav_items.length; index++) {
             var item = self.conf.nav_items_bname[index]; // get link names
-            self.urls.push(document.location.host+'/?page='+item);
+            self.urls.push(this.baseurl+'?page='+item);
         }
 
         /* get the full url for posts */
         for (index = 1; index < self.conf.blog_items.length; index++) {
-            self.urls.push(document.location.host+'/?post='+self.conf.blog_items[index]);
+            self.urls.push(this.baseurl+'?post='+self.conf.blog_items[index]);
         }
     };
     this.listURLs();
