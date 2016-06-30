@@ -260,6 +260,16 @@ function MarkdownToHTML(relpath, markdown_div)
     getFile(relpath, callback);
 }
 
+/* pass Markdown text as a string to convert to HTML, then post to given
+ * div-id. */
+function MarkdownTextToHTML(text, markdown_div)
+{
+    html = Showdown(text);
+    fillDiv(html, markdown_div);
+    $('.linenums').removeClass('linenums');
+    prettyPrint();
+}
+
 /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
  * post to given div-id. */
 function PostToHTML(relpath, markdown_body) {
@@ -354,6 +364,7 @@ function Config(filename) {
     this.disqus_shortname = "false"; // Disqus Site Shortname
     this.pagination = 0; // number of posts per page (0 means all posts on one)
     this.requested_blog_index_page = 0; // the URL query 'p='
+    this.sitemap_active = false; // determine if the sitemap will be displayed
 
     this.parseFile = function (text) {
 
@@ -421,6 +432,9 @@ function Config(filename) {
         /* This function verifies whether the url query resolves to an existing
          * page. If not, the landing page is selected. If there is both a
          * requested page and post, the page takes precedence. */
+
+        /* check if the sitemap is requested */
+        self.sitemap_active = (self.getURLParameter('sitemap') == 'true');
 
         /* check for requested posts */
         var post_found = 0;
@@ -504,6 +518,10 @@ function Config(filename) {
         return self.post_active;
     };
 
+    this.sitemapIsActive = function() {
+        return self.sitemap_active;
+    };
+
     this.valid_url = function(url) {
         return /^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(url);
     };
@@ -575,6 +593,41 @@ function Config(filename) {
     getFile(self.filename, self.parseFile, false);
 
 } // - Config()
+
+/* Sitemap object
+ * Generates a simple sitemap text that can be pasted into a sitemap.txt file.
+ */
+function Sitemap(conf) {
+
+    var self = this;
+
+    this.conf = conf;
+    /* list the sitemap url */
+    this.urls = [document.location.host+'/?sitemap=true'];
+    this.text = '';
+
+    this.listURLs = function() {
+
+        /* get the full url for pages */
+        for (index = 0; index < self.conf.nav_items.length; index++) {
+            var item = self.conf.nav_items_bname[index]; // get link names
+            self.urls.push(document.location.host+'/?page='+item);
+        }
+
+        /* get the full url for posts */
+        for (index = 1; index < self.conf.blog_items.length; index++) {
+            self.urls.push(document.location.host+'/?post='+self.conf.blog_items[index]);
+        }
+    };
+    this.listURLs();
+
+    this.generateText = function() {
+        for (index = 0; index < self.urls.length; index++) {
+            self.text += self.urls[index] + '<br>';
+        }
+    };
+    this.generateText();
+}
 
 /* Nav object 
  * Populates navbar based on user config. */
@@ -836,6 +889,11 @@ function renderPage() {
         /* render previous and next links */
         var gsPagination = new PageNav(gsConfig);
         gsPagination.genPostNavListTags();
+
+    /* render the simple sitemap */
+    } else if (gsConfig.sitemapIsActive()) {
+        var gsSitemap = new Sitemap(gsConfig);
+        MarkdownTextToHTML(gsSitemap.text, gs_body_id);
 
     } else {
         /* The active page needs to correspond to a file at this point so 
