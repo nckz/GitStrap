@@ -865,14 +865,6 @@ function renderPage() {
     /* fill in the navbar */
     var gsNav = new Nav(gsConfig);
 
-    /* async GETs */
-    if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
-        MarkdownToHTML(gsConfig.header, gs_header_id);
-    }
-    if (gsConfig.footerIsActive()) {
-        MarkdownToHTML(gsConfig.footer, gs_footer_id);
-    }
-
     /* Fill the body content with either a blog-index, post or page. */
     if (gsConfig.blogIndexIsActive()) {
         /* If the blog index page is requested and the blog is turned on in the
@@ -905,6 +897,14 @@ function renderPage() {
     /* send to analytics if its set */
     if (gsConfig.gaIsActive()) {
         sendGoogleAnalytics(gsConfig.ga_tracker_id);
+    }
+
+    /* async GETs */
+    if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
+        MarkdownToHTML(gsConfig.header, gs_header_id);
+    }
+    if (gsConfig.footerIsActive()) {
+        MarkdownToHTML(gsConfig.footer, gs_footer_id);
     }
 
     /* show final contents */
