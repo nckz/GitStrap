@@ -373,7 +373,7 @@ function Config(filename) {
     this.ga_tracker_id = "false"; // Google Analytics Tracker ID
     this.disqus_shortname = "false"; // Disqus Site Shortname
     this.pagination = 0; // number of posts per page (0 means all posts on one)
-    this.requested_blog_index_page = 0; // the URL query 'p='
+    this.requested_blog_index_page = 1; // the URL query 'p='
     this.sitemap_active = false; // determine if the sitemap will be displayed
 
     this.parseFile = function (text) {
