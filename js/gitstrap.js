@@ -930,6 +930,7 @@ function renderPage() {
 
 } // - renderPage()
 
+/* so far this seems to work only half the time with GoogleBot */
 function renderPageForBots() {
 
     /* Fill the body content with either a blog-index, post or page. */
