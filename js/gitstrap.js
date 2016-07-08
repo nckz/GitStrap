@@ -262,7 +262,7 @@ function MarkdownToHTML(relpath, markdown_div)
 
 /* pass Markdown text as a string to convert to HTML, then post to given
  * div-id. */
-function MarkdownTextToHTML(text, markdown_div)
+function PrettyMarkdownTextToHTML(text, markdown_div)
 {
     html = Showdown(text);
     fillDiv(html, markdown_div);
@@ -270,11 +270,14 @@ function MarkdownTextToHTML(text, markdown_div)
     prettyPrint();
 }
 
-/* minimal processing, quick dump to html */
-function TextToHTML(text, markdown_div)
+/* download, translate and dump the text to the body tag */
+function MarkdownFileToBody(filename)
 {
-    html = Showdown(text);
-    fillDiv(html, markdown_div);
+    var callback = function (text) {
+        html = Showdown(text);
+        fillDiv(html, gs_body_id);
+    }
+    getFile(filename, callback, true);
 }
 
 /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
@@ -635,6 +638,14 @@ function Sitemap(conf) {
         }
     };
     this.generateText();
+
+    this.links = function() {
+        var lst = '';
+        for (index = 0; index < self.urls.length; index++) {
+            lst += '<a href='+self.urls[index]+'>'+self.urls[index]+'</a><br>';
+        }
+        return lst;
+    };
 }
 
 /* Nav object 
@@ -893,7 +904,7 @@ function renderPage() {
     /* render the simple sitemap */
     } else if (gsConfig.sitemapIsActive()) {
         var gsSitemap = new Sitemap(gsConfig);
-        MarkdownTextToHTML(gsSitemap.text, gs_body_id);
+        PrettyMarkdownTextToHTML(gsSitemap.text, gs_body_id);
 
     } else {
         /* The active page needs to correspond to a file at this point so 
@@ -917,7 +928,56 @@ function renderPage() {
     /* show final contents */
     $('body').fadeIn(667);
 
-} // - gitstrap()
+} // - renderPage()
+
+function renderPageForBots() {
+
+    /* Fill the body content with either a blog-index, post or page. */
+    /* fill in the navbar */
+    var gsNav = new Nav(gsConfig);
+
+    /* Fill the body content with either a blog-index, post or page. */
+    if (gsConfig.blogIndexIsActive()) {
+
+        /* use the sitemap instead of the blog index */
+        var gsSitemap = new Sitemap(gsConfig);
+        PrettyMarkdownTextToHTML(gsSitemap.links(), gs_body_id);
+
+    } else if (gsConfig.postIsActive()) {
+        /* If a post was found in the url query. */
+        MarkdownFileToBody(gs_post_path+'/'+gsConfig.requested_page);
+
+        /* render previous and next links */
+        var gsPagination = new PageNav(gsConfig);
+        gsPagination.genPostNavListTags();
+
+    /* render the simple sitemap */
+    } else if (gsConfig.sitemapIsActive()) {
+        var gsSitemap = new Sitemap(gsConfig);
+        PrettyMarkdownTextToHTML(gsSitemap.links(), gs_body_id);
+
+    } else {
+        /* The active page needs to correspond to a file at this point so 
+         * that the getter can download it.  The getter should be post aware.*/
+        MarkdownFileToBody(gsConfig.requested_page); 
+    }
+ 
+    /* send to analytics if its set */
+    if (gsConfig.gaIsActive()) {
+        sendGoogleAnalytics(gsConfig.ga_tracker_id);
+    }
+
+    /* async GETs */
+    if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
+        MarkdownToHTML(gsConfig.header, gs_header_id);
+    }
+    if (gsConfig.footerIsActive()) {
+        MarkdownToHTML(gsConfig.footer, gs_footer_id);
+    }
+
+} // - renderPageForBots()
+
+
 
 /* jQuery ------------------------------------------------------------------ */
 /* Wait for jquery to load before running these: */
@@ -934,17 +994,16 @@ function gs_jq_start (arr, idx) {
         /* load page and hide */
         document.head.innerHTML = gs_html_head_tag;
         document.body.innerHTML = gs_html_body_tag;
-        document.body.style.display = 'none';
-        setTitle(gsConfig.title);
 
+        /* make the rendering as simple as possible for bots */
         if (navigator.userAgent.search(/bot/i) != -1) {
-            getFile('Config', function(text) {TextToHTML(text,gs_body_id)});
-
-            /* show final contents */
-            $('body').fadeIn(667);
-
+            setTitle(gsConfig.title + ' (robot view)');
+            renderPageForBots();
             return;
         }
+
+        document.body.style.display = 'none';
+        setTitle(gsConfig.title);
 
         /* Start the rest of the gitstrap processing after the theme has been
          * downloaded. */
