@@ -274,8 +274,8 @@ function PrettyMarkdownTextToHTML(text, markdown_div)
 function MarkdownFileToBody(filename)
 {
     var callback = function (text) {
-        html = Showdown(text);
-        fillDiv(html, gs_body_id);
+        //html = Showdown(text);
+        fillDiv(text, gs_body_id);
     }
     getFile(filename, callback, true);
 }
@@ -933,10 +933,6 @@ function renderPage() {
 function renderPageForBots() {
 
     /* Fill the body content with either a blog-index, post or page. */
-    /* fill in the navbar */
-    var gsNav = new Nav(gsConfig);
-
-    /* Fill the body content with either a blog-index, post or page. */
     if (gsConfig.blogIndexIsActive()) {
 
         /* use the sitemap instead of the blog index */
@@ -961,6 +957,10 @@ function renderPageForBots() {
          * that the getter can download it.  The getter should be post aware.*/
         MarkdownFileToBody(gsConfig.requested_page); 
     }
+
+    /* Fill the body content with either a blog-index, post or page. */
+    /* fill in the navbar */
+    var gsNav = new Nav(gsConfig);
  
 } // - renderPageForBots()
 
@@ -983,8 +983,8 @@ function gs_jq_start (arr, idx) {
 
         /* make the rendering as simple as possible for bots */
         if (navigator.userAgent.search(/bot/i) != -1) {
-            setTitle(gsConfig.title + ' (robot view)');
             renderPageForBots();
+            setTitle(gsConfig.title + ' (robot view)');
             return;
         }
 
