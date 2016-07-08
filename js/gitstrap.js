@@ -273,7 +273,8 @@ function MarkdownTextToHTML(text, markdown_div)
 /* minimal processing, quick dump to html */
 function TextToHTML(text, markdown_div)
 {
-    fillDiv(text, markdown_div);
+    html = Showdown(text);
+    fillDiv(html, markdown_div);
 }
 
 /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
