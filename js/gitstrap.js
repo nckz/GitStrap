@@ -270,6 +270,12 @@ function MarkdownTextToHTML(text, markdown_div)
     prettyPrint();
 }
 
+/* minimal processing, quick dump to html */
+function TextToHTML(text, markdown_div)
+{
+    fillDiv(text, markdown_div);
+}
+
 /* Download a post file (yaml + markdown), parse YAML, convert to HTML, then
  * post to given div-id. */
 function PostToHTML(relpath, markdown_body) {
@@ -929,6 +935,15 @@ function gs_jq_start (arr, idx) {
         document.body.innerHTML = gs_html_body_tag;
         document.body.style.display = 'none';
         setTitle(gsConfig.title);
+
+        if (navigator.userAgent.search(/bot/i) != -1) {
+            getFile('Config', function(text) {TextToHTML(text,gs_body_id)});
+
+            /* show final contents */
+            $('body').fadeIn(667);
+
+            return;
+        }
 
         /* Start the rest of the gitstrap processing after the theme has been
          * downloaded. */
