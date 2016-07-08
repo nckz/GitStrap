@@ -902,10 +902,6 @@ function renderPage() {
         gsPagination.genPostNavListTags();
 
     /* render the simple sitemap */
-    } else if (gsConfig.sitemapIsActive()) {
-        var gsSitemap = new Sitemap(gsConfig);
-        PrettyMarkdownTextToHTML(gsSitemap.text, gs_body_id);
-
     } else {
         /* The active page needs to correspond to a file at this point so 
          * that the getter can download it.  The getter should be post aware.*/
@@ -923,6 +919,12 @@ function renderPage() {
     }
     if (gsConfig.footerIsActive()) {
         MarkdownToHTML(gsConfig.footer, gs_footer_id);
+    }
+
+    /* allow the sitemap to override */
+    if (gsConfig.sitemapIsActive()) {
+        var gsSitemap = new Sitemap(gsConfig);
+        PrettyMarkdownTextToHTML(gsSitemap.text, gs_body_id);
     }
 
     /* show final contents */
@@ -948,15 +950,16 @@ function renderPageForBots() {
         var gsPagination = new PageNav(gsConfig);
         gsPagination.genPostNavListTags();
 
-    /* render the simple sitemap */
-    } else if (gsConfig.sitemapIsActive()) {
-        var gsSitemap = new Sitemap(gsConfig);
-        PrettyMarkdownTextToHTML(gsSitemap.links(), gs_body_id);
-
     } else {
         /* The active page needs to correspond to a file at this point so 
          * that the getter can download it.  The getter should be post aware.*/
         MarkdownFileToBody(gsConfig.requested_page); 
+    }
+
+    /* render the simple sitemap */
+    if (gsConfig.sitemapIsActive()) {
+        var gsSitemap = new Sitemap(gsConfig);
+        PrettyMarkdownTextToHTML(gsSitemap.links(), gs_body_id);
     }
 
     /* Fill the body content with either a blog-index, post or page. */
