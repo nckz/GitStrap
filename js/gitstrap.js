@@ -962,21 +962,7 @@ function renderPageForBots() {
         MarkdownFileToBody(gsConfig.requested_page); 
     }
  
-    /* send to analytics if its set */
-    if (gsConfig.gaIsActive()) {
-        sendGoogleAnalytics(gsConfig.ga_tracker_id);
-    }
-
-    /* async GETs */
-    if (gsConfig.headerIsActive() && ! gsConfig.postIsActive()) {
-        MarkdownToHTML(gsConfig.header, gs_header_id);
-    }
-    if (gsConfig.footerIsActive()) {
-        MarkdownToHTML(gsConfig.footer, gs_footer_id);
-    }
-
 } // - renderPageForBots()
-
 
 
 /* jQuery ------------------------------------------------------------------ */
